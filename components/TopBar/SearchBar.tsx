@@ -4,9 +4,10 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 const SearchBar = () => {
     return (
         <Input
-            icon={<MagnifyingGlassIcon />}
+            icon={<MagnifyingGlassIcon height={24} width={24} />}
             variant="unstyled"
             placeholder="Search Tasks..."
+            size="md"
         />
     );
 };
