@@ -21,7 +21,9 @@ Quick schedule is a web app that allows you to create tasks with a timer attache
 
 ## Motivation
 
-This project is just a learning exercise to improve my design and developing skills using react, next.js, and more libraries that I don't have the oportunity to use at work.
+This project is just a learning exercise to improve my design and development skills using react, next.js and more libraries that I don't get a chance to use at work.
+
+This project is a kind of an over-engineered to-do list.
 
 <br />
 <br />
