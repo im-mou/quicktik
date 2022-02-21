@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import RootStore from './RootStore';
+import { RootStore } from './RootStore';
 import GroupsStore from './GroupsStore';
 
 /**

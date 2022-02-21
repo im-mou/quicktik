@@ -9,13 +9,17 @@ const CircleCheckIcon = ({
     color: string;
 }) => {
     return selected ? (
-        <CheckIcon color={color} height={24} width={24} />
+        <CheckIcon
+            color={color}
+            height={20}
+            width={20}
+        />
     ) : (
         <Box
-            mx={4}
+            mx={2}
             sx={{
-                height: 16,
-                width: 16,
+                height: 14,
+                width: 14,
                 background: color,
                 borderRadius: 16,
                 border: `1px solid rgba(0,0,0,0.1)`

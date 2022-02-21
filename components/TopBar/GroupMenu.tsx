@@ -1,4 +1,4 @@
-import { forwardRef, memo, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 import { Menu, Divider, Text, Input } from '@mantine/core';
 import {
     Group,
@@ -12,29 +12,18 @@ import {
     ExternalLinkIcon
 } from '@radix-ui/react-icons';
 
-import { TGroup } from '../../types';
+import { IGroup } from '../../types';
 import CircleCheckIcon from '../icons/CircleCheckIcon';
+import { observer } from 'mobx-react';
+import { useStore } from '../../store';
+import { groupsService } from '../../services/groups.service';
+import { useMutation } from 'react-query';
+import { helpers } from '../../common/helpers';
 
 // types and interaces
 interface GroupButtonProps extends UnstyledButtonProps {
     color: string;
 }
-
-// Constants
-const menuItems: TGroup[] = [
-    {
-        id: '23412-3534-5345-fg',
-        label: 'Home',
-        color: DEFAULT_THEME.colors.green[5],
-        order: 0
-    },
-    {
-        id: '23412-sdfsdf-5345-fg',
-        label: 'University',
-        color: DEFAULT_THEME.colors.orange[5],
-        order: 1
-    }
-];
 
 // Group Selector Button Component
 const GroupButton = forwardRef<HTMLButtonElement, GroupButtonProps>(
@@ -64,14 +53,7 @@ const GroupButton = forwardRef<HTMLButtonElement, GroupButtonProps>(
             {...others}
         >
             <Group>
-                <div style={{ flex: 1, minWidth: 100 }}>
-                    <Text color="dimmed" size="xs">
-                        Board
-                    </Text>
-                    <Text size="sm" weight={500} sx={{ lineHeight: 1 }}>
-                        {children}
-                    </Text>
-                </div>
+                <div style={{ flex: 1, minWidth: 100 }}>{children}</div>
                 <ChevronDownIcon />
             </Group>
         </UnstyledButton>
@@ -79,26 +61,51 @@ const GroupButton = forwardRef<HTMLButtonElement, GroupButtonProps>(
 );
 
 // Main component
-const GroupMenu: React.FC = memo(() => {
-    const currentGroup = menuItems[0];
+const GroupMenu: React.FC = observer(() => {
+    // global state
+    const { GroupsStore } = useStore();
 
     // Localstate
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // call to create a new group in the DB
+    const { mutate: mutateCreateGroup } = useMutation(
+        groupsService.createGroup,
+        {
+            onSuccess: ({ data }) => {
+                // add group to store
+                GroupsStore.addNewGroup(data);
+            }
+        }
+    );
+
+    // call to select a group
+    const { mutate: mutateSelectGroup } = useMutation(
+        groupsService.selectGroup,
+        {
+            onSuccess: ({ data }) => {
+                // add group to store
+                GroupsStore.setSelectedGroup(data);
+            }
+        }
+    );
+
     // get group color inidicator for the button
     const getSelectedGroupColor = (): string => {
-        return DEFAULT_THEME.colors.green[5];
+        return GroupsStore.selectedGroup
+            ? GroupsStore.selectedGroup.color
+            : DEFAULT_THEME.colors.gray[2];
     };
 
     // create a new group
-    const createNewGroup = (group: Partial<TGroup>) => {
-        // Add group to store
-        console.log(group);
+    const createNewGroup = (group: IGroup) => {
+        mutateCreateGroup({ value: group });
     };
 
+    // change selected group
     const changeSelectedGroup = useCallback(
-        (group: TGroup) => () => {
-            console.log(group);
+        (group: IGroup) => () => {
+            mutateSelectGroup({ id: group.id });
         },
         []
     );
@@ -113,7 +120,11 @@ const GroupMenu: React.FC = memo(() => {
             // create group
             createNewGroup({
                 label: inputRef.current.value.trim(),
-                color: DEFAULT_THEME.colors.gray[1]
+                color: helpers.randomColor(),
+                order: GroupsStore.groups.length
+                    ? GroupsStore.groups[GroupsStore.groups.length - 1].order +
+                      1
+                    : 0
             });
 
             // Reset input
@@ -123,16 +134,32 @@ const GroupMenu: React.FC = memo(() => {
 
     return (
         <Menu
-            size="lg"
+            size="md"
             withArrow
             placement="center"
             closeOnItemClick={false}
             control={
-                <GroupButton title="Home" color={getSelectedGroupColor()}>
-                    Home
+                <GroupButton color={getSelectedGroupColor()}>
+                    {GroupsStore.selectedGroup ? (
+                        <>
+                            <Text color="dimmed" size="xs">
+                                Board
+                            </Text>
+                            <Text size="sm" weight={500} sx={{ lineHeight: 1 }}>
+                                {GroupsStore.selectedGroup.label}
+                            </Text>
+                        </>
+                    ) : (
+                        <Text size="sm" weight={500} sx={{ lineHeight: 1 }}>
+                            Create New Group
+                        </Text>
+                    )}
                 </GroupButton>
             }
         >
+            {/**
+             * Group Name Input
+             */}
             <Menu.Label>
                 <Input
                     ref={inputRef}
@@ -143,34 +170,40 @@ const GroupMenu: React.FC = memo(() => {
                 />
             </Menu.Label>
 
-            <Divider />
+            {GroupsStore.groups.length && <Divider />}
 
-            <Menu.Label>Select a group or create one</Menu.Label>
-            {menuItems
-                .sort((a, b) => a.order - b.order)
-                .map((item) => (
-                    <Menu.Item
-                        onClick={changeSelectedGroup(item)}
-                        key={item.label}
-                        icon={
-                            <CircleCheckIcon
-                                color={item.color}
-                                selected={currentGroup.id === item.id}
-                            />
-                        }
-                    >
-                        {item.label}
-                    </Menu.Item>
-                ))}
+            {/**
+             * Group List
+             */}
+            {GroupsStore.groups.length && (
+                <Menu.Label>Select a group or create one</Menu.Label>
+            )}
 
-            <Divider />
+            {GroupsStore.groups.map((item) => (
+                <Menu.Item
+                    onClick={changeSelectedGroup(item)}
+                    key={item.label}
+                    icon={
+                        <CircleCheckIcon
+                            color={item.color}
+                            selected={GroupsStore.selectedGroup?.id === item.id}
+                        />
+                    }
+                >
+                    {item.label}
+                </Menu.Item>
+            ))}
 
-            <Menu.Item
-                icon={<GearIcon />}
-                rightSection={<ExternalLinkIcon color="gray" />}
-            >
-                Manage Groups
-            </Menu.Item>
+            {GroupsStore.groups.length && <Divider />}
+
+            {GroupsStore.groups.length && (
+                <Menu.Item
+                    icon={<GearIcon />}
+                    rightSection={<ExternalLinkIcon color="gray" />}
+                >
+                    Manage Groups
+                </Menu.Item>
+            )}
         </Menu>
     );
 });

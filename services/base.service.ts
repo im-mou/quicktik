@@ -1,45 +1,10 @@
-import localForage from 'localforage';
-
-interface IResponse<T = any> {
-    data?: T;
-    error?: any;
-    status: 200 | 201 | 404 | 422 | 500;
-}
-
-interface IRequest {
-    get: <T = any>(table: LocalForage, key: string) => Promise<IResponse<T>>;
-    post: <T = any>(
-        table: LocalForage,
-        key: string,
-        value: any
-    ) => Promise<IResponse<T>>;
-    put: <T = any>(
-        table: LocalForage,
-        key: string,
-        newValue: any
-    ) => Promise<IResponse<T>>;
-    delete: <T = any>(table: LocalForage, key: string) => Promise<IResponse<T>>;
-    count: (table: LocalForage) => Promise<IResponse<{ length: number }>>;
-}
+import { uuid as uuidv4, fromString } from 'uuidv4';
+import { IRequest, IResponse } from '../types';
 
 // base service
 export default class BaseService {
-    // DB tables
-    private groupsDB = localForage.createInstance({
-        name: 'groups'
-    });
-
-    private tasksDB = localForage.createInstance({
-        name: 'tasks'
-    });
-
-    public DB = {
-        groups: this.groupsDB,
-        tasks: this.tasksDB
-    };
-
     // Get an item
-    private get = async <T = any>(
+    private get = async <T extends any>(
         table: LocalForage,
         key: string
     ): Promise<IResponse<T>> => {
@@ -59,10 +24,10 @@ export default class BaseService {
     };
 
     // Post -> create item
-    private post = async <T = any>(
+    private post = async <T extends any>(
         table: LocalForage,
         key: string,
-        value: any
+        value: T
     ): Promise<IResponse<T>> => {
         try {
             const data = await table.setItem(key, value);
@@ -80,10 +45,10 @@ export default class BaseService {
     };
 
     // put -> update item
-    private put = async <T = any>(
+    private put = async <T extends any>(
         table: LocalForage,
         key: string,
-        newValue: any
+        newValue: T
     ): Promise<IResponse<T>> => {
         // Check if item exists
         table.getItem(key, function (err) {
@@ -111,7 +76,7 @@ export default class BaseService {
     };
 
     // delete item from table
-    private delete = async <T = any>(
+    private delete = async <T extends any>(
         table: LocalForage,
         key: string
     ): Promise<IResponse<T>> => {
@@ -126,7 +91,7 @@ export default class BaseService {
         });
 
         try {
-            const data = await table.removeItem(key);
+            await table.removeItem(key);
 
             return Promise.resolve({
                 status: 201
@@ -158,11 +123,52 @@ export default class BaseService {
         }
     };
 
+    // get all table entries
+    private all = async <T extends any>(
+        table: LocalForage
+    ): Promise<IResponse<T>> => {
+        try {
+            const data: any[] = [];
+
+            return new Promise((resolve, reject) => {
+                table
+                    .iterate((value, key) => {
+                        data.push(value);
+                    })
+                    .then(() => {
+                        resolve({
+                            status: 201,
+                            data: data as T
+                        });
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            });
+        } catch (err) {
+            return Promise.reject({
+                status: 500,
+                data: err
+            });
+        }
+    };
+
+    // Request functions
     public request: IRequest = {
         get: this.get,
         post: this.post,
         put: this.put,
         delete: this.delete,
-        count: this.count
+        count: this.count,
+        all: this.all
+    };
+
+    // get random uuid
+    public uuid = (string?: string) => {
+        if (string) {
+            return fromString(string);
+        } else {
+            return uuidv4();
+        }
     };
 }

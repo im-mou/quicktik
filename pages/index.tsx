@@ -1,8 +1,18 @@
 import type { NextPage } from 'next';
 import { AppShell, Header } from '@mantine/core';
 import TopBar from '../components/TopBar';
+import { useStore } from '../store';
+import { useEffect } from 'react';
 
 const Home: NextPage = () => {
+    const { RootStore, GroupsStore } = useStore();
+
+    // Initialize RootStore
+    useEffect(() => {
+        RootStore.init()
+        GroupsStore.init()
+    }, []);
+
     return (
         <AppShell
             padding="md"
