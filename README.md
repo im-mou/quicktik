@@ -13,7 +13,18 @@ Quick schedule is a web app that allows you to create tasks with a timer attache
 <br />
 
 <p align="center">
+  <img width="100%" src="./assets/images/design_layout.png">
+  Design Layout
+</p>
+
+<br />
+<br />
+
+<br />
+
+<p align="center">
   <img height="100%" src="./assets/images/tech_used.png">
+  Tech Stack
 </p>
 
 <br />
