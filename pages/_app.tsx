@@ -2,21 +2,15 @@ import '../styles/globals.css';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
-import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { StoreProvider } from '../store';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import GroupsConfigModal from '../Modals/GroupsConfigModal';
+import ModalsProviderWrapper from '../Modals';
 
 export default function App(props: AppProps) {
     const { Component, pageProps } = props;
 
     const queryClient = new QueryClient();
-
-    // creat modals list for MOdals context
-    const modals = {
-        groupsConfig: GroupsConfigModal
-    };
 
     return (
         <>
@@ -43,9 +37,9 @@ export default function App(props: AppProps) {
                         }}
                     >
                         <NotificationsProvider>
-                            <ModalsProvider modals={modals}>
+                            <ModalsProviderWrapper>
                                 <Component {...pageProps} />
-                            </ModalsProvider>
+                            </ModalsProviderWrapper>
                         </NotificationsProvider>
                     </MantineProvider>
                 </StoreProvider>

@@ -1,46 +1,63 @@
+import { helpers } from '../common/helpers';
 import Database from '../database';
 import { IGroup } from '../types';
 import BaseService from './base.service';
 
 class GroupsService extends BaseService {
-    private GROUPS_TABLE = new Database().groupsTable;
-    private USER_SETTING_TABLE = new Database().userSettingsTable;
-
     // Get all groups list
     getAll = async () => {
-        return this.request.all<IGroup[]>(this.GROUPS_TABLE);
+        return this.db.groups.table.allDocs();
+    };
+
+    // Get group by iid
+    getGroupById = async ({ id }: { id: string }) => {
+        // Get group
+        return this.db.groups.table.get(id);
     };
 
     // get selected group
     getSelectedGroup = async () => {
         // get selected group id
-        const response = await this.request.get<string>(
-            this.USER_SETTING_TABLE.table,
-            this.USER_SETTING_TABLE.keys.SELECTED_GROUP_ID
+        const selected_group = await this.db.userSettings.table.get(
+            this.db.userSettings.keys.SELECTED_GROUP_ID
         );
-        return this.request.get<IGroup>(this.GROUPS_TABLE, response.data);
+
+        // Get group
+        return this.getGroupById({ id: selected_group.selected_group_id });
     };
 
     // get selected group
     selectGroup = async ({ id }: { id: string }) => {
         // select group
-        await this.request.post<string>(
-            this.USER_SETTING_TABLE.table,
-            this.USER_SETTING_TABLE.keys.SELECTED_GROUP_ID,
-            id
-        );
+        const response = await this.db.userSettings.table.put({
+            _id: this.db.userSettings.keys.SELECTED_GROUP_ID,
+            selected_group_id: id
+        });
 
-        // get group
-        return this.request.get<IGroup>(this.GROUPS_TABLE, id);
+        if (response.ok) {
+            // get group
+            return this.getGroupById({ id });
+        } else {
+            return Promise.reject('Could not store resource');
+        }
     };
 
     // create a new group
     createGroup = async ({ value }: { value: IGroup }) => {
-        const id = this.uuid();
-        return this.request.post<IGroup>(this.GROUPS_TABLE, id, {
-            id: id,
+        const id = helpers.uuid();
+
+        // add group
+        const response = await this.db.groups.table.put({
+            _id: id,
             ...value
         });
+
+        if (response.ok) {
+            // get group
+            return this.getGroupById({ id: response.id });
+        } else {
+            return Promise.reject('Could not store resource');
+        }
     };
 }
 

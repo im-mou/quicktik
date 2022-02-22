@@ -15,9 +15,7 @@ export class RootStore {
         this.GroupsStore = new GroupsStore(this);
     }
 
-    async init() {
-        runInAction(() => {
-            this.appLoaded = true;
-        });
+    setAppLoaded() {
+        this.appLoaded = true;
     }
 }

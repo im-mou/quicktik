@@ -17,19 +17,26 @@ class GroupsStore {
     }
 
     async init(callback?: () => void) {
-        this.fetchAllGroups();
+        await this.fetchAllGroups();
+        callback?.();
     }
 
-    fetchAllGroups = () => {
-        // get all groups
-        groupsService.getAll().then(({ data }) => {
-            this.groups = data.sort((a, b) => a.order - b.order);
-        });
+    fetchAllGroups = async () => {
+        try {
+            // get all groups
+            const groupsList = await groupsService.getAll();
+            this.groups = groupsList.rows
+                .map((row) => row.doc)
+                .sort((a, b) => a.order - b.order);
 
-        // get selected group
-        groupsService.getSelectedGroup().then(({ data }) => {
-            this.selectedGroup = data;
-        });
+            // get selected group
+            const selectedGroup = await groupsService.getSelectedGroup();
+            this.selectedGroup = selectedGroup;
+
+            return Promise.resolve(true);
+        } catch (e: any) {
+            return Promise.reject(e);
+        }
     };
 
     addNewGroup = (group: IGroup) => {

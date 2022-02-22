@@ -72,7 +72,7 @@ const GroupMenu: React.FC = observer(() => {
     const { mutate: mutateCreateGroup } = useMutation(
         groupsService.createGroup,
         {
-            onSuccess: ({ data }) => {
+            onSuccess: (data) => {
                 // add group to store
                 GroupsStore.addNewGroup(data);
             }
@@ -83,7 +83,7 @@ const GroupMenu: React.FC = observer(() => {
     const { mutate: mutateSelectGroup } = useMutation(
         groupsService.selectGroup,
         {
-            onSuccess: ({ data }) => {
+            onSuccess: (data) => {
                 // add group to store
                 GroupsStore.setSelectedGroup(data);
             }
@@ -105,7 +105,7 @@ const GroupMenu: React.FC = observer(() => {
     // change selected group
     const changeSelectedGroup = useCallback(
         (group: IGroup) => () => {
-            mutateSelectGroup({ id: group.id });
+            mutateSelectGroup({ id: group._id });
         },
         []
     );
@@ -186,7 +186,9 @@ const GroupMenu: React.FC = observer(() => {
                     icon={
                         <CircleCheckIcon
                             color={item.color}
-                            selected={GroupsStore.selectedGroup?.id === item.id}
+                            selected={
+                                GroupsStore.selectedGroup?._id === item._id
+                            }
                         />
                     }
                 >
