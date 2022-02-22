@@ -1,5 +1,6 @@
 import PouchDB from 'pouchdb';
-import idbAdapter from 'pouchdb-adapter-idb';
+// @ts-ignore
+import idbAdapter from 'pouchdb-adapter-indexeddb';
 import { IGroup } from '../types';
 
 // local interfaces
@@ -34,7 +35,7 @@ export default class Database {
             table: new pouch<IGroup>('groups-table', this.dbConfig)
         };
         this.tasks = {
-            table: new pouch('tasks-table', this.dbConfig)
+            table: new pouch<any>('tasks-table', this.dbConfig)
         };
         this.userSettings = {
             table: new pouch<IUserSettingsTableData>(
