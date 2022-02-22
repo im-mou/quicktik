@@ -18,7 +18,7 @@ import { observer } from 'mobx-react';
 import { useStore } from '../../store';
 import { groupsService } from '../../services/groups.service';
 import { useMutation } from 'react-query';
-import { helpers } from '../../common/helpers';
+import { helpers } from '../../utils/helpers';
 
 // types and interaces
 interface GroupButtonProps extends UnstyledButtonProps {

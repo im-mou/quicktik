@@ -1,38 +1,42 @@
-import { helpers } from '../common/helpers';
-import Database from '../database';
-import { IGroup } from '../types';
+import { helpers } from '../utils/helpers';
+import { IGroup, IUserConfig } from '../types';
 import BaseService from './base.service';
 
 class GroupsService extends BaseService {
     // Get all groups list
     getAll = async () => {
-        return this.db.groups.table.allDocs();
+        return this.db.groups.allDocs();
     };
 
     // Get group by iid
     getGroupById = async ({ id }: { id: string }) => {
         // Get group
-        return this.db.groups.table.get(id);
+        return this.db.groups.get(id);
     };
 
     // get selected group
     getSelectedGroup = async () => {
         // get selected group id
-        const selected_group = await this.db.userSettings.table.get(
-            this.db.userSettings.keys.SELECTED_GROUP_ID
+        const selected_group = await this.db.config.get<IUserConfig>(
+            this.db.constants.config.USER_CONFIG
         );
 
         // Get group
         return this.getGroupById({ id: selected_group.selected_group_id });
     };
 
-    // get selected group
+    // change current selected group
     selectGroup = async ({ id }: { id: string }) => {
-        // select group
-        const response = await this.db.userSettings.table.put({
-            _id: this.db.userSettings.keys.SELECTED_GROUP_ID,
-            selected_group_id: id
-        });
+        // store new group value in setting table
+        const config = await this.db.config.get<IUserConfig>(
+            this.db.constants.config.USER_CONFIG
+        );
+
+        // Update retrieved object
+        config.selected_group_id = id;
+
+        // save changes
+        const response = await this.db.config.put(config);
 
         if (response.ok) {
             // get group
@@ -47,7 +51,7 @@ class GroupsService extends BaseService {
         const id = helpers.uuid();
 
         // add group
-        const response = await this.db.groups.table.put({
+        const response = await this.db.groups.put({
             _id: id,
             ...value
         });

@@ -1,8 +1,6 @@
-import Database from '../database';
+import database from '../database';
 
 // base service
 export default class BaseService {
-    // instanciate database
-    public db = new Database();
-
+    public db = database;
 }

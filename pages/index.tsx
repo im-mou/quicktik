@@ -4,16 +4,27 @@ import TopBar from '../components/TopBar';
 import { useStore } from '../store';
 import { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { useRouter } from 'next/router';
+import { settingsService } from '../services/settings.service';
 
 const Home: NextPage = observer(() => {
     const { RootStore, GroupsStore } = useStore();
+    const router = useRouter();
 
     // Initialize RootStore
     useEffect(() => {
         async function init() {
-            await GroupsStore.init();
-            RootStore.setAppLoaded();
-            console.log('hello');
+            // Check if it's the first time that a user is using the app
+            const isAppInitialized = await settingsService.isAppInitialized();
+
+            if (!isAppInitialized) {
+                // if app not initialized, redirect to the 'welcome page' / setup page
+                router.push('/welcome');
+            } else {
+                // Initialize stores
+                await GroupsStore.init();
+                RootStore.setAppLoaded();
+            }
         }
 
         init();

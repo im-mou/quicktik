@@ -8,3 +8,16 @@ export interface IGroup extends Partial<TPouchDBRow> {
     color: string;
     order: number;
 }
+
+export interface IAppConfig {
+    app_is_initialized?: boolean;
+    initialization_timestamp?: number;
+    app_version?: string;
+}
+
+export interface IUserConfig {
+    name?: string;
+    profile_image?: any;
+    selected_group_id?: string;
+    last_activity?: number;
+}
