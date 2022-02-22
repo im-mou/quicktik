@@ -1,4 +1,4 @@
-import { Box, Group, Space } from '@mantine/core';
+import { Box, Group } from '@mantine/core';
 import Logo from '../../assets/images/quicktik-logo.png';
 import Image from 'next/image';
 import ProfileButton from './ProfileButton';
