@@ -14,11 +14,11 @@ import {
     Grid,
     Center,
     Avatar,
-    Tooltip
+    Tooltip,
+    UnstyledButton,
+    LoadingOverlay
 } from '@mantine/core';
-import { useStore } from '../../store';
-import { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
+import { useEffect, useRef, useState } from 'react';
 import LogoIcon from '../../assets/images/quicktik-icon.png';
 import Image from 'next/image';
 import {
@@ -29,7 +29,9 @@ import {
 } from '@radix-ui/react-icons';
 import { GROUP_COLORS_LIST } from '../../utils/constants';
 import { useForm } from '@mantine/hooks';
-import { groupsService } from '../../services/groups.service';
+import { settingsService } from '../../services/settings.service';
+import { useRouter } from 'next/router';
+import { useNotifications } from '@mantine/notifications';
 
 // Dumb local component
 const BoxCenteredContent = (props: BoxProps<any>) => {
@@ -52,14 +54,17 @@ const Welcome: NextPage = () => {
     const [groupColor, setGroupColor] = useState(
         () => DEFAULT_THEME.colors.green[5]
     );
+    const [profilePic, setProfilePic] = useState<File>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const fileInputRef = useRef<HTMLInputElement>();
 
-    // gloabal state
-    // const { GroupsStore } = useStore();
-
+    // Hooks
+    const notifications = useNotifications();
+    const router = useRouter();
     const form = useForm({
         initialValues: {
             fullname: '',
-            boardname: 'My Tasks'
+            boardname: ''
         },
 
         validationRules: {
@@ -70,27 +75,55 @@ const Welcome: NextPage = () => {
 
     // Initialize RootStore
     useEffect(() => {
-        console.log('wellcome');
+        async function init() {
+            // Check if it's the first time that a user is using the app
+            const isAppInitialized = await settingsService.isAppInitialized();
+
+            if (isAppInitialized) {
+                // if app is initialized, redirect to the 'home' page
+                router.push('/');
+            }
+        }
+
+        init();
     }, []);
 
+    // Handle form submit
     const handleFormSubmit = async (values: typeof form['values']) => {
+        setLoading(true);
+
         try {
-            // Create a new board
-            const newGroup = await groupsService.createGroup({
-                value: {
-                    label: values.boardname,
-                    color: groupColor,
-                    order: 0
+            // initialize app data
+            await settingsService.initializeAppData({
+                group: { label: values.boardname, color: groupColor, order: 0 },
+                userData: {
+                    name: values.fullname,
+                    profile_image: profilePic
                 }
             });
 
-            // Set the newly created group as currently selected board
-
-
-
+            // redirect to homepage once file has finished loaded
+            setTimeout(() => {
+                router.push('/');
+            }, 1000);
         } catch (e) {
             console.error(e);
+            setLoading(false);
+            notifications.showNotification({
+                title: 'Oops!',
+                message: 'Something went wrong...',
+                color: 'red'
+            });
         }
+    };
+
+    const changeHandler = (event: any) => {
+        setProfilePic(event.target.files[0]);
+    };
+
+    const resetImageInput = () => {
+        setProfilePic(null);
+        fileInputRef.current.files = null;
     };
 
     return (
@@ -105,6 +138,8 @@ const Welcome: NextPage = () => {
                 }
             })}
         >
+            <LoadingOverlay visible={loading} />
+
             <div
                 style={{
                     height: '100vh',
@@ -140,22 +175,60 @@ const Welcome: NextPage = () => {
 
                     <form onSubmit={form.onSubmit(handleFormSubmit)}>
                         <BoxCenteredContent>
-                            <Center
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                                onChange={changeHandler}
+                            />
+                            <UnstyledButton
+                                onClick={() => fileInputRef?.current.click()}
                                 sx={(theme) => ({
-                                    padding: 8,
+                                    overflow: 'hidden',
                                     background: '#fff',
                                     borderRadius: 16,
-                                    height: 100,
-                                    width: 100,
-                                    flexDirection: 'column',
-                                    border: `1px solid ${theme.colors.gray[3]}`
+                                    border: `1px solid ${theme.colors.gray[3]}`,
+                                    transition: 'all 250ms',
+                                    '&:hover': {
+                                        boxShadow: theme.shadows.xl
+                                    }
                                 })}
                             >
-                                <Avatar radius="xl" />
-                                <Text size="xs" color="dimmed">
-                                    Upload image
-                                </Text>
-                            </Center>
+                                {profilePic ? (
+                                    <img
+                                        src={URL.createObjectURL(profilePic)}
+                                        height={100}
+                                        width={100}
+                                        alt="profile pic"
+                                    />
+                                ) : (
+                                    <Center
+                                        sx={{
+                                            height: 100,
+                                            width: 100,
+                                            flexDirection: 'column'
+                                        }}
+                                    >
+                                        <Avatar radius="xl" mb={4} />
+                                        <Text size="xs" color="dimmed">
+                                            Upload image
+                                        </Text>
+                                    </Center>
+                                )}
+                            </UnstyledButton>
+
+                            {profilePic && (
+                                <Button
+                                    mt={4}
+                                    variant="light"
+                                    color="red"
+                                    compact
+                                    onClick={resetImageInput}
+                                >
+                                    Remove
+                                </Button>
+                            )}
                         </BoxCenteredContent>
 
                         <BoxCenteredContent my={32}>
@@ -226,7 +299,7 @@ const Welcome: NextPage = () => {
                                             <Menu.Label>
                                                 Select a color for your board
                                             </Menu.Label>
-                                            <Menu.Item>
+                                            <Menu.Item component="div">
                                                 <ColorPicker
                                                     format="hex"
                                                     swatches={GROUP_COLORS_LIST}

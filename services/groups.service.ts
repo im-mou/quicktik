@@ -5,7 +5,7 @@ import BaseService from './base.service';
 class GroupsService extends BaseService {
     // Get all groups list
     getAll = async () => {
-        return this.db.groups.allDocs();
+        return this.db.groups.allDocs({ include_docs: true });
     };
 
     // Get group by iid

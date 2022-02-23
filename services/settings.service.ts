@@ -17,20 +17,16 @@ class SettingsService extends BaseService {
     };
 
     // initialize the app with initial required data
-    setupApp = async ({
+    initializeAppData = async ({
         group,
         userData
     }: {
         group: IGroup;
-        userData: Pick<IUserConfig, 'name' | 'profile_image'>;
+        userData: { name: string; profile_image: File };
     }) => {
         try {
             // get app config data from db
-            let appConfig = await this.db.config.get<IAppConfig>(
-                this.db.constants.config.APP_CONFIG
-            );
-
-            return;
+            let appConfig = await this.getAppSettings();
 
             // if app is not initialized, we'll do it now
             if (!appConfig.app_is_initialized) {
@@ -41,15 +37,21 @@ class SettingsService extends BaseService {
                  * Save user data and create new group
                  */
                 await new Promise((resolve, reject) => {
-                    this.db.config
-                        .get<IUserConfig>(this.db.constants.config.APP_CONFIG)
+                    this.getUserSettings()
                         .then((doc) => {
                             // Update and save keys
                             doc.name = userData.name;
                             doc.selected_group_id = newGroup.id;
 
+                            // save user profile image
                             if (userData.profile_image) {
-                                doc.profile_image = userData.name;
+                                doc._attachments = {
+                                    profile_image: {
+                                        content_type:
+                                            userData.profile_image.type,
+                                        data: userData.profile_image
+                                    }
+                                };
                             }
 
                             this.db.config.put(doc);
@@ -65,11 +67,10 @@ class SettingsService extends BaseService {
                  * Get APP CONFIG data to mark the app as initialized
                  */
                 await new Promise((resolve, reject) => {
-                    this.db.config
-                        .get<IAppConfig>(this.db.constants.config.APP_CONFIG)
+                    this.getAppSettings()
                         .then((doc) => {
                             // Update and save keys
-                            doc.app_is_initialized = true;
+                            doc.app_is_initialized = 1;
                             this.db.config.put(doc);
 
                             resolve(doc);
@@ -82,6 +83,28 @@ class SettingsService extends BaseService {
         } catch (e) {
             throw new Error('Something went wrong while initializing the app');
         }
+    };
+
+    // Get user settings data
+    getUserSettings = async (): Promise<IUserConfig> => {
+        return this.db.config.get<IUserConfig>(
+            this.db.constants.config.USER_CONFIG
+        );
+    };
+
+    // Get user settings data
+    getAppSettings = async (): Promise<IAppConfig> => {
+        return this.db.config.get<IAppConfig>(
+            this.db.constants.config.APP_CONFIG
+        );
+    };
+
+    // Get user profile iamge
+    getUserProfileImage = async () => {
+        return this.db.config.getAttachment(
+            this.db.constants.config.USER_CONFIG,
+            'profile_image'
+        );
     };
 }
 export const settingsService = new SettingsService();

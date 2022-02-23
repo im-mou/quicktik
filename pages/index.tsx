@@ -8,7 +8,10 @@ import { useRouter } from 'next/router';
 import { settingsService } from '../services/settings.service';
 
 const Home: NextPage = observer(() => {
+    // gloabl state
     const { RootStore, GroupsStore } = useStore();
+
+    // Hooks
     const router = useRouter();
 
     // Initialize RootStore
