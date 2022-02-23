@@ -5,7 +5,7 @@ import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { StoreProvider } from '../store';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import ModalsProviderWrapper from '../modals';
+// import ModalsProviderWrapper from '../modals';
 
 export default function App(props: AppProps) {
     const { Component, pageProps } = props;
@@ -37,9 +37,9 @@ export default function App(props: AppProps) {
                         }}
                     >
                         <NotificationsProvider>
-                            <ModalsProviderWrapper>
+                            {/* <ModalsProviderWrapper> */}
                                 <Component {...pageProps} />
-                            </ModalsProviderWrapper>
+                            {/* </ModalsProviderWrapper> */}
                         </NotificationsProvider>
                     </MantineProvider>
                 </StoreProvider>
