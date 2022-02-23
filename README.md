@@ -1,4 +1,4 @@
-<p align="center" style="margin: ">
+<p align="center" style="margin:48px 0">
   <img height="40" src="./assets/images/quicktik-logo.png">
 </p>
 <br />
@@ -35,6 +35,18 @@ QuickTik is a web app that allows you to create tasks with a timer attached to t
 This project is just a learning exercise to improve my design and development skills using react, next.js and more libraries that I don't get a chance to use at work.
 
 This project is a kind of an over-engineered to-do list.
+
+<br />
+<br />
+
+## Stuff to add in a futur version
+
+- Add a backend for multi-device usage of the app.
+- Add proper pomodoro setup (?)
+- Add notifications (mail, push, etc...)
+- Collaborative boards and tasks with owner, editors and viewers.
+- Create an ultra-minimal, distraction-free board view for people with ADHD.
+- Other platforms integration (Google, Trello, etc...)
 
 <br />
 <br />
