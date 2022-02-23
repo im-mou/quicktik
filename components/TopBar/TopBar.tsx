@@ -5,6 +5,7 @@ import ProfileButton from './ProfileButton';
 import GroupMenu from './GroupMenu';
 import TimeAndTasksStats from './TimeAndTasksStats';
 import SearchBar from './SearchBar';
+import { helpers } from '../../utils/helpers';
 
 // Main component
 const TopBar: React.FC = () => {
@@ -19,6 +20,7 @@ const TopBar: React.FC = () => {
                             width={116}
                             src={Logo}
                             alt="QuickTik Logo"
+                            loader={helpers.imageLoader}
                         />
                     </Box>
 

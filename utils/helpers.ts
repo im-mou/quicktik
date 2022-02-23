@@ -20,7 +20,13 @@ const uuid = (string?: string) => {
     }
 };
 
+// opt-out of image optimization, no-op
+const imageLoader = ({ src }: { src: string }) => {
+    return src;
+};
+
 export const helpers = {
     randomColor,
-    uuid
+    uuid,
+    imageLoader
 };

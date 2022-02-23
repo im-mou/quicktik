@@ -32,6 +32,7 @@ import { useForm } from '@mantine/hooks';
 import { settingsService } from '../../services/settings.service';
 import { useRouter } from 'next/router';
 import { useNotifications } from '@mantine/notifications';
+import { helpers } from '../../utils/helpers';
 
 // Dumb local component
 const BoxCenteredContent = (props: BoxProps<any>) => {
@@ -162,6 +163,7 @@ const Welcome: NextPage = () => {
                         width={40}
                         src={LogoIcon}
                         alt="QuickTik Logo"
+                        loader={helpers.imageLoader}
                     />
 
                     <BoxCenteredContent mb={64}>
@@ -169,7 +171,7 @@ const Welcome: NextPage = () => {
                             Welcome to QuickTik
                         </Text>
                         <Text size="xs" color="gray">
-                            Provide your info and you're all setup
+                            Provide your info and you&apos;re all setup
                         </Text>
                     </BoxCenteredContent>
 
@@ -196,11 +198,12 @@ const Welcome: NextPage = () => {
                                 })}
                             >
                                 {profilePic ? (
-                                    <img
+                                    <Image
                                         src={URL.createObjectURL(profilePic)}
                                         height={100}
                                         width={100}
                                         alt="profile pic"
+                                        loader={helpers.imageLoader}
                                     />
                                 ) : (
                                     <Center
@@ -318,7 +321,7 @@ const Welcome: NextPage = () => {
                             sx={{ paddingLeft: 48, paddingRight: 48 }}
                             rightIcon={<RocketIcon />}
                         >
-                            Let's go
+                            Let&apos;s go
                         </Button>
                     </form>
 
