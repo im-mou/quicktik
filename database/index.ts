@@ -51,10 +51,22 @@ export default class Database {
         this.tables = [this.groups, this.tasks, this.config];
     }
 
-    async destroy() {
-        return this.tables.map((table) => {
-            table.destroy();
+    // Destroy all tebles from the database
+    public async destroy() {
+        const promises = this.tables.map((table) => {
+            return new Promise((resolve, reject) => {
+                table
+                    .destroy()
+                    .then(() => {
+                        resolve(true);
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
         });
+
+        return Promise.all(promises);
     }
 
     export() {

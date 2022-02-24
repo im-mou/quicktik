@@ -2,24 +2,19 @@ import { settingsService } from '../services/settings.service';
 import TestDatabase from './initilizeTestDatabase';
 
 const database = new TestDatabase();
+database.init();
 
-beforeEach(() => {
-    jest.setTimeout(1000 * 200);
-    database.init();
-});
-
-afterEach(async () => {
+afterAll(async () => {
     await database.db.destroy();
 });
 
 test('should test that user-config initial values are created', async () => {
-    jest.setTimeout(1000 * 200);
     // Test user-config
-    const user_config = await settingsService.getUserSettings();
+    let user_config = await settingsService.getUserSettings();
     expect(user_config).not.toBeUndefined();
     expect(user_config._id).not.toBeUndefined();
     expect(typeof user_config._id).toBe('string');
-});
+}, 30000);
 
 // test('should test that app-config has ben initialized', async () => {
 
