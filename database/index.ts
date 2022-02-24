@@ -1,56 +1,67 @@
 import PouchDB from 'pouchdb';
-// @ts-ignore
-import indexeddbAdapter from 'pouchdb-adapter-indexeddb';
 import { IGroup, IAppConfig, IUserConfig } from '../types';
-
-// Attach indexedDB adapter to PouchDB instance.
-PouchDB.plugin(indexeddbAdapter).plugin(require('pouchdb-upsert'));
 
 // local interfaces
 interface IDatabseInstance<T> extends PouchDB.Database<T> {}
 
 // databse service
-class Database {
+export default class Database {
     // tables
     public groups: IDatabseInstance<IGroup>;
     public tasks: IDatabseInstance<unknown>;
     public config: IDatabseInstance<IAppConfig | IUserConfig>;
+    public tables: IDatabseInstance<unknown>[] = [];
 
     // props
     private dbConfig: PouchDB.Configuration.DatabaseConfiguration;
     public constants = {
-        config: {
-            APP_CONFIG: 'app-config',
-            USER_CONFIG: 'user-config'
-        }
+        APP_CONFIG: 'app-config',
+        USER_CONFIG: 'user-config'
     };
 
     // ctor
-    constructor(config?: PouchDB.Configuration.DatabaseConfiguration) {
+    constructor(
+        PouchDBInstance: PouchDB.Static<{}>,
+        config?: PouchDB.Configuration.DatabaseConfiguration,
+        suffix?: string
+    ) {
+        // attach plugins
+        PouchDBInstance.plugin(require('pouchdb-upsert'));
+
         // databse settings
         this.dbConfig = config || { adapter: 'indexeddb' /** IndexedDB */ };
 
         // create tables
-        this.groups = new PouchDB<IGroup>('groups-table', this.dbConfig);
-
-        this.tasks = new PouchDB<any>('tasks-table', this.dbConfig);
-
-        this.config = new PouchDB<IAppConfig | IUserConfig>(
-            'app-config-table',
+        this.groups = new PouchDBInstance<IGroup>(
+            `groups-table${suffix || ''}`,
             this.dbConfig
         );
 
-        // check if config keys are created
-        this.config.putIfNotExists<IAppConfig>({
-            _id: this.constants.config.APP_CONFIG,
-            initialization_timestamp: +new Date(),
-            app_version: 'alpha' // @Todo: use git version
-        });
-        this.config.putIfNotExists<IUserConfig>({
-            _id: this.constants.config.USER_CONFIG
+        this.tasks = new PouchDBInstance<any>(
+            `tasks-table${suffix || ''}`,
+            this.dbConfig
+        );
+
+        this.config = new PouchDBInstance<IAppConfig | IUserConfig>(
+            `app-config-table${suffix || ''}`,
+            this.dbConfig
+        );
+
+        // create an array with tables
+        this.tables = [this.groups, this.tasks, this.config];
+    }
+
+    async destroy() {
+        return this.tables.map((table) => {
+            table.destroy();
         });
     }
-}
 
-// Singleton
-export default new Database();
+    export() {
+        // Todo
+    }
+
+    import() {
+        // Todo
+    }
+}

@@ -1,4 +1,4 @@
-import { IAppConfig, IGroup, IUserConfig } from '../types';
+import { IAppConfig, IGroup, IUserConfig, TPouchError } from '../types';
 import BaseService from './base.service';
 
 class SettingsService extends BaseService {
@@ -7,13 +7,11 @@ class SettingsService extends BaseService {
         try {
             // get app config data from db
             let appConfig = await this.db.config.get<IAppConfig>(
-                this.db.constants.config.APP_CONFIG
+                this.db.constants.APP_CONFIG
             );
 
             return Boolean(appConfig.app_is_initialized);
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e: any) {}
     };
 
     // initialize the app with initial required data
@@ -87,22 +85,29 @@ class SettingsService extends BaseService {
 
     // Get user settings data
     getUserSettings = async (): Promise<IUserConfig> => {
-        return this.db.config.get<IUserConfig>(
-            this.db.constants.config.USER_CONFIG
-        );
+        // Insert empty field if not present
+        await this.db.config.putIfNotExists<IUserConfig>({
+            _id: this.db.constants.USER_CONFIG
+        });
+        return this.db.config.get<IUserConfig>(this.db.constants.USER_CONFIG);
     };
 
     // Get user settings data
     getAppSettings = async (): Promise<IAppConfig> => {
-        return this.db.config.get<IAppConfig>(
-            this.db.constants.config.APP_CONFIG
-        );
+        // Insert empty field if not present
+        await this.db.config.putIfNotExists<IAppConfig>({
+            _id: this.db.constants.APP_CONFIG,
+            initialization_timestamp: +new Date(),
+            app_version: 'alpha' // @Todo: use git version
+        });
+
+        return this.db.config.get<IAppConfig>(this.db.constants.APP_CONFIG);
     };
 
-    // Get user profile iamge
+    // Get user profile image
     getUserProfileImage = async () => {
         return this.db.config.getAttachment(
-            this.db.constants.config.USER_CONFIG,
+            this.db.constants.USER_CONFIG,
             'profile_image'
         );
     };

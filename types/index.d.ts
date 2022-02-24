@@ -1,7 +1,9 @@
 // types
 
 type TPouchDBRow = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta;
+export type TPouchError = PouchDB.Core.Error;
 
+// Interfaces
 export interface IGroup extends Partial<TPouchDBRow> {
     _id?: string;
     label: string;

@@ -34,7 +34,7 @@ const ProfileButton = forwardRef<HTMLButtonElement, ProfileButtonProps>(
                     setProfileImage(image as Blob);
                 })
                 .catch((err) => {
-                    console.error(err);
+                    if (err?.['status'] !== 404) console.error(err);
                 });
         }, []);
 

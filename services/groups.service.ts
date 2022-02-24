@@ -18,7 +18,7 @@ class GroupsService extends BaseService {
     getSelectedGroup = async () => {
         // get selected group id
         const selected_group = await this.db.config.get<IUserConfig>(
-            this.db.constants.config.USER_CONFIG
+            this.db.constants.USER_CONFIG
         );
 
         // Get group
@@ -29,7 +29,7 @@ class GroupsService extends BaseService {
     selectGroup = async ({ id }: { id: string }) => {
         // store new group value in setting table
         const config = await this.db.config.get<IUserConfig>(
-            this.db.constants.config.USER_CONFIG
+            this.db.constants.USER_CONFIG
         );
 
         // Update retrieved object
