@@ -14,14 +14,17 @@ class SettingsService extends BaseService {
         } catch (e: any) {}
     };
 
-    // initialize the app with initial required data
+    // initialize the app with initial required user data and a new board
     initializeAppData = async ({
         group,
         userData
     }: {
         group: IGroup;
-        userData: { name: string; profile_image: File };
+        userData: { name: string; profile_image?: File };
     }) => {
+        if (!group || !userData)
+            throw new Error('Some of the required data was not provided');
+
         try {
             // get app config data from db
             let appConfig = await this.getAppSettings();

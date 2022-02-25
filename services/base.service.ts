@@ -1,5 +1,4 @@
 import indexedDB from '../database/indexedDB';
-import inMemoryDB from '../database/inMemoryDB';
 import { TPouchError } from '../types';
 
 // base service
@@ -7,7 +6,7 @@ export default class BaseService {
     public db: ReturnType<typeof indexedDB>;
 
     constructor() {
-        this.db = inMemoryDB();
+        this.db = indexedDB();
     }
 
     parseError(error: TPouchError | any) {
