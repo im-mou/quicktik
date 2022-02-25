@@ -1,4 +1,3 @@
-import PouchDB from 'pouchdb';
 import { IGroup, IAppConfig, IUserConfig } from '../types';
 
 // local interfaces
