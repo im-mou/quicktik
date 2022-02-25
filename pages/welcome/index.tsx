@@ -1,78 +1,23 @@
 import type { NextPage } from 'next';
-import {
-    Box,
-    AppShell,
-    Text,
-    BoxProps,
-    Input,
-    Divider,
-    ColorSwatch,
-    Menu,
-    DEFAULT_THEME,
-    ColorPicker,
-    Button,
-    Grid,
-    Center,
-    Avatar,
-    Tooltip,
-    UnstyledButton,
-    LoadingOverlay
-} from '@mantine/core';
+import { Box, AppShell, Divider, LoadingOverlay } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
-import LogoIcon from '../../assets/images/quicktik-icon.png';
-import Image from 'next/image';
-import {
-    PersonIcon,
-    DashboardIcon,
-    RocketIcon,
-    ExclamationTriangleIcon
-} from '@radix-ui/react-icons';
-import { GROUP_COLORS_LIST } from '../../utils/constants';
-import { useForm } from '@mantine/hooks';
 import { settingsService } from '../../services/settings.service';
 import { useRouter } from 'next/router';
 import { useNotifications } from '@mantine/notifications';
-import { helpers } from '../../utils/helpers';
-
-// Dumb local component
-const BoxCenteredContent = (props: BoxProps<any>) => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column'
-            }}
-            {...props}
-        />
-    );
-};
+import WelcomeHeader from '../../components/Welcome/Header';
+import WelcomeUploadProfileImage from '../../components/Welcome/UploadProfileImage';
+import WelcomeForm from '../../components/Welcome/Form';
+import WelcomeFooter from '../../components/Welcome/Footer';
 
 // Main component
 const Welcome: NextPage = () => {
     // local state
-    const [groupColor, setGroupColor] = useState(
-        () => DEFAULT_THEME.colors.green[5]
-    );
-    const [profilePic, setProfilePic] = useState<File>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const fileInputRef = useRef<HTMLInputElement>();
+    const profileImageRef = useRef<File>();
 
     // Hooks
     const notifications = useNotifications();
     const router = useRouter();
-    const form = useForm({
-        initialValues: {
-            fullname: '',
-            boardname: ''
-        },
-
-        validationRules: {
-            fullname: (value) => value.trim().length > 0,
-            boardname: (value) => value.trim().length > 0
-        }
-    });
 
     // Initialize RootStore
     useEffect(() => {
@@ -90,16 +35,25 @@ const Welcome: NextPage = () => {
     }, []);
 
     // Handle form submit
-    const handleFormSubmit = async (values: typeof form['values']) => {
+    const handleFormSubmit = async (event: any) => {
         setLoading(true);
+
+        // get form data
+        event.preventDefault();
+        const fullname = event.target.elements.fullname.value;
+        const boardname = event.target.elements.boardname.value;
+        const boardColor = event.target.elements.color.value;
+
+        // dead simple validation
+        if (!fullname || !boardname) throw new Error('Some form values were not provided');
 
         try {
             // initialize app data
             await settingsService.initializeAppData({
-                group: { label: values.boardname, color: groupColor, order: 0 },
+                group: { label: boardname, color: boardColor, order: 0 },
                 userData: {
-                    name: values.fullname,
-                    profile_image: profilePic
+                    name: fullname,
+                    profile_image: profileImageRef.current
                 }
             });
 
@@ -118,24 +72,12 @@ const Welcome: NextPage = () => {
         }
     };
 
-    const changeHandler = (event: any) => {
-        setProfilePic(event.target.files[0]);
-    };
-
-    const resetImageInput = () => {
-        setProfilePic(null);
-        fileInputRef.current.files = null;
-    };
-
     return (
         <AppShell
             padding={0}
             styles={(theme) => ({
                 main: {
-                    backgroundColor:
-                        theme.colorScheme === 'dark'
-                            ? theme.colors.dark[8]
-                            : theme.colors.gray[0]
+                    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
                 }
             })}
         >
@@ -156,193 +98,16 @@ const Welcome: NextPage = () => {
                         textAlign: 'center'
                     }}
                 >
-                    {/** APP Logo */}
+                    <WelcomeHeader />
 
-                    <Image
-                        height={40}
-                        width={40}
-                        src={LogoIcon}
-                        alt="QuickTik Logo"
-                        loader={helpers.imageLoader}
-                    />
-
-                    <BoxCenteredContent mb={64}>
-                        <Text size="lg" weight="bold" color="gray">
-                            Welcome to QuickTik
-                        </Text>
-                        <Text size="xs" color="gray">
-                            Provide your info and you&apos;re all setup
-                        </Text>
-                    </BoxCenteredContent>
-
-                    <form onSubmit={form.onSubmit(handleFormSubmit)}>
-                        <BoxCenteredContent>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                ref={fileInputRef}
-                                onChange={changeHandler}
-                            />
-                            <UnstyledButton
-                                onClick={() => fileInputRef?.current.click()}
-                                sx={(theme) => ({
-                                    overflow: 'hidden',
-                                    background: '#fff',
-                                    borderRadius: 16,
-                                    border: `1px solid ${theme.colors.gray[3]}`,
-                                    transition: 'all 250ms',
-                                    '&:hover': {
-                                        boxShadow: theme.shadows.xl
-                                    }
-                                })}
-                            >
-                                {profilePic ? (
-                                    <Image
-                                        src={URL.createObjectURL(profilePic)}
-                                        height={100}
-                                        width={100}
-                                        alt="profile pic"
-                                        loader={helpers.imageLoader}
-                                    />
-                                ) : (
-                                    <Center
-                                        sx={{
-                                            height: 100,
-                                            width: 100,
-                                            flexDirection: 'column'
-                                        }}
-                                    >
-                                        <Avatar radius="xl" mb={4} />
-                                        <Text size="xs" color="dimmed">
-                                            Upload image
-                                        </Text>
-                                    </Center>
-                                )}
-                            </UnstyledButton>
-
-                            {profilePic && (
-                                <Button
-                                    mt={4}
-                                    variant="light"
-                                    color="red"
-                                    compact
-                                    onClick={resetImageInput}
-                                >
-                                    Remove
-                                </Button>
-                            )}
-                        </BoxCenteredContent>
-
-                        <BoxCenteredContent my={32}>
-                            <Box
-                                sx={(theme) => ({
-                                    background: '#fff',
-                                    borderRadius: 8,
-                                    width: '100%',
-                                    border: `1px solid ${theme.colors.gray[3]}`
-                                })}
-                            >
-                                <Input
-                                    required
-                                    my={8}
-                                    icon={<PersonIcon />}
-                                    variant="unstyled"
-                                    placeholder="Your full name"
-                                    size="md"
-                                    {...form.getInputProps('fullname')}
-                                />
-
-                                <Divider
-                                    sx={(theme) => ({
-                                        borderColor: theme.colors.gray[3]
-                                    })}
-                                />
-
-                                <Input
-                                    required
-                                    my={8}
-                                    icon={<DashboardIcon />}
-                                    variant="unstyled"
-                                    placeholder="Board name (ex.: My Tasks)"
-                                    {...form.getInputProps('boardname')}
-                                    size="md"
-                                    rightSectionProps={{
-                                        style: {
-                                            display: 'flex',
-                                            justifyContent: 'flex-end',
-                                            paddingRight: 14
-                                        }
-                                    }}
-                                    rightSection={
-                                        <Menu
-                                            placement="center"
-                                            withArrow
-                                            closeOnItemClick={false}
-                                            size="lg"
-                                            control={
-                                                <Tooltip
-                                                    label="Choose board color"
-                                                    withArrow
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center'
-                                                    }}
-                                                >
-                                                    <ColorSwatch
-                                                        color={groupColor}
-                                                        style={{
-                                                            color: '#fff',
-                                                            cursor: 'pointer'
-                                                        }}
-                                                    />
-                                                </Tooltip>
-                                            }
-                                        >
-                                            <Menu.Label>
-                                                Select a color for your board
-                                            </Menu.Label>
-                                            <Menu.Item component="div">
-                                                <ColorPicker
-                                                    format="hex"
-                                                    swatches={GROUP_COLORS_LIST}
-                                                    value={groupColor}
-                                                    onChange={setGroupColor}
-                                                />
-                                            </Menu.Item>
-                                        </Menu>
-                                    }
-                                />
-                            </Box>
-                        </BoxCenteredContent>
-
-                        <Button
-                            type="submit"
-                            sx={{ paddingLeft: 48, paddingRight: 48 }}
-                            rightIcon={<RocketIcon />}
-                        >
-                            Let&apos;s go
-                        </Button>
+                    <form onSubmit={handleFormSubmit}>
+                        <WelcomeUploadProfileImage imageFileRef={profileImageRef} />
+                        <WelcomeForm />
                     </form>
 
                     <Divider my={48} labelPosition="center" variant="dashed" />
 
-                    <Box sx={{ textAlign: 'left' }}>
-                        <Grid>
-                            <Grid.Col span={2}>
-                                <ExclamationTriangleIcon
-                                    style={{ height: 38, width: 28 }}
-                                />
-                            </Grid.Col>
-                            <Grid.Col span={10}>
-                                <Text size="xs" color="gray">
-                                    All your data will be stored locally in your
-                                    device using IndexedDB so be careful when
-                                    clearing browser data.
-                                </Text>
-                            </Grid.Col>
-                        </Grid>
-                    </Box>
+                    <WelcomeFooter />
                 </Box>
             </div>
         </AppShell>

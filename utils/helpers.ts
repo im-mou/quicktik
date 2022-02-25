@@ -4,8 +4,7 @@ import { uuid as uuidv4, fromString } from 'uuidv4';
  * Generate a random hex color string
  * @returns color hex value
  */
-const randomColor = () =>
-    `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+const randomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
 /**
  * Generate a uuid

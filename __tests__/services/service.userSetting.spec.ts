@@ -33,31 +33,33 @@ describe('Tests while app is not initialized', () => {
         await database.db.destroy();
     });
 
-    test('should test that user-config initial values are created', async () => {
+    test('should test that user-config initial values are created', () => {
         // Test user-config
-        let user_config = await settingsService.getUserSettings();
-        expect(user_config).not.toBeUndefined();
-        expect(user_config._id).not.toBeUndefined();
-        expect(typeof user_config._id).toBe('string');
+        settingsService.getUserSettings().then((user_config) => {
+            expect(user_config).not.toBeUndefined();
+            expect(user_config._id).not.toBeUndefined();
+            expect(typeof user_config._id).toBe('string');
+        });
     });
 
-    test('should test that app-config initial values are created', async () => {
+    test('should test that app-config initial values are created', () => {
         // Test user-config
-        let app_config = await settingsService.getAppSettings();
+        settingsService.getAppSettings().then((app_config) => {
+            expect(app_config).not.toBeUndefined();
+            expect(app_config._id).not.toBeUndefined();
+            expect(typeof app_config._id).toBe('string');
 
-        expect(app_config).not.toBeUndefined();
-        expect(app_config._id).not.toBeUndefined();
-        expect(typeof app_config._id).toBe('string');
-
-        // App is not initializde yet
-        expect(app_config.app_is_initialized).not.toBe(1);
-        expect(app_config.app_version).not.toBeUndefined();
-        expect(typeof app_config.initialization_timestamp).toBe('number');
+            // App is not initializde yet
+            expect(app_config.app_is_initialized).not.toBe(1);
+            expect(app_config.app_version).not.toBeUndefined();
+            expect(typeof app_config.initialization_timestamp).toBe('number');
+        });
     });
 
-    test('should test if app is initialized', async () => {
-        let response = await settingsService.isAppInitialized();
-        expect(response).toBeFalsy();
+    test('should test if app is initialized', () => {
+        settingsService.isAppInitialized().then((response) => {
+            expect(response).toBeFalsy();
+        });
     });
 });
 
@@ -70,8 +72,8 @@ describe('Tests while app has been initialized', () => {
         await database.db.destroy();
     });
 
-    test('should not initialize app data with out any parametes', async () => {
-        await expect(
+    test('should not initialize app data with out any parametes', () => {
+        expect(
             settingsService.initializeAppData({
                 group: undefined,
                 userData: undefined
@@ -80,33 +82,36 @@ describe('Tests while app has been initialized', () => {
     });
 
     describe('Tests initialized app', () => {
-        test('should initialize app with complete initial data', async () => {
+        test('should initialize app with complete initial data', () => {
             // Initialize app
-            await settingsService.initializeAppData({
-                group: newGroup,
-                userData: newUser
-            });
-
-            // app is initialized
-            await expect(
-                settingsService.isAppInitialized()
-            ).resolves.toBeTruthy();
+            settingsService
+                .initializeAppData({
+                    group: newGroup,
+                    userData: newUser
+                })
+                .then(() => {
+                    // app is initialized
+                    expect(settingsService.isAppInitialized()).resolves.toBeTruthy();
+                });
         });
 
-        test('should verify user data is correct', async () => {
+        test('should verify user data is correct', () => {
             // Verify newly created group and user data
-            const userSettings = await settingsService.getUserSettings();
-
-            expect(userSettings.selected_group_id).toBe(newGroup._id);
-            expect(userSettings.name).toBe(newUser.name);
+            settingsService.getUserSettings().then((userSettings) => {
+                expect(userSettings.selected_group_id).toBe(newGroup._id);
+                expect(userSettings.name).toBe(newUser.name);
+            });
         });
 
-        test('should verify group data is correct', async () => {
+        test('should verify group data is correct', () => {
             // Check if group was correctly added
-            const group = await groupsService.getGroupById({
-                id: newGroup._id
-            });
-            expect(group).toMatchObject(newGroup);
+            groupsService
+                .getGroupById({
+                    id: newGroup._id
+                })
+                .then((group) => {
+                    expect(group).toMatchObject(newGroup);
+                });
         });
     });
 });
