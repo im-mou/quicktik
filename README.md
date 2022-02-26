@@ -5,7 +5,7 @@
 <p align="center">
   QuickTik - A simple time bounded to-do task scheduler.
 </p>
-  
+
 <br />
 <br />
 
@@ -56,12 +56,42 @@ This project is a kind of an over-engineered to-do list.
 
 ## Running in local envoirnment
 
-First, run the development server:
+### Setup and running the project using YARN (workspaces)
 
 ```bash
-npm run dev
-# or
+# install all deps using
+yarn install
+
+# run next js dev server
 yarn dev
+
+# Production:
+yarn build
+yarn start
+
+# Optional:
+# Compile nextjs as a static project for production.
+# With this command there is no need to build, it does it automatically.
+yarn export
+```
+
+### Setup and running the project using NPM (lerna)
+
+```bash
+# install all deps
+npm run bootstrap
+
+# run next js dev server
+npm run dev
+
+# Production:
+npm run build
+npm run start
+
+# Optional:
+# Compile nextjs as a static project for production.
+# With this command there is no need to build, it does it automatically.
+npm run export
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
