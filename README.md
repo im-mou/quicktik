@@ -28,7 +28,9 @@
 
 ## Overview
 
-QuickTik is a web app that allows you to create tasks with a timer attached to them and orginize them in diference boards. It allows you to play, pause, edit or mark the tasks as completed. Currently all data will be saved locally in your device using IndexedDB so be careful when clearing browser data.
+QuickTik is a web app that allows you to create tasks with a timer attached to them and organize them in different boards. It allows you to play, pause, edit or mark the tasks as completed.
+
+>**IMPORTANT** – Currently all your data will be store locally in your device using IndexedDB so be careful when clearing browser data.
 
 <br />
 <br />
@@ -44,9 +46,9 @@ QuickTik is a web app that allows you to create tasks with a timer attached to t
 
 ## Motivation
 
-This project is just a learning exercise to improve my design and development skills using react, next.js, lerna, yarn workspaces and other tech and libraries that I don't get a chance to use at work.
+This project is just a learning exercise to improve my design and development skills using react, next.js, lerna, yarn workspaces and other tech and libraries that I don't get the chance to use at work.
 
-> Note: This project is a kind of an over-engineered to-do list don't take it too seriously.
+> Note: This project is a kind of an over-engineered to-do list, so please don't take it too seriously 😅
 
 <br />
 <br />
@@ -54,7 +56,7 @@ This project is just a learning exercise to improve my design and development sk
 ## Stuff to add in a futur version
 
 -   Add a backend for multi-device usage of the app.
--   Add proper pomodoro setup (?)
+-   Add a proper pomodoro setup (?)
 -   Add notifications (mail, push, etc...)
 -   Collaborative boards and tasks with owner, editors and viewers.
 -   Create an ultra-minimal, distraction-free board view for people with ADHD.
@@ -81,22 +83,22 @@ npm install
 
 **Setup and running the project using YARN w/ workspaces**
 
-Run nextjs dev server:
+Run next.js dev server:
 
 ```bash
-# run nextjs dev server
+# run next.js dev server
 yarn dev
 ```
 
-Run nextjs production server:
+Run next.js production server:
 
 ```bash
-# run next js production server
+# run next.js production server
 yarn build
 yarn start
 ```
 
-Compile nextjs as a static project for deployment:
+Compile next.js as a static project for deployment:
 
 ```bash
 # With this command there is no need to build, it does it automatically.
@@ -111,7 +113,7 @@ yarn export
 # install all deps
 npm run bootstrap
 
-# run next js dev server
+# run next.js dev server
 npm run dev
 
 # or:
@@ -122,7 +124,7 @@ npm run start
 
 # or:
 
-# Compile nextjs as a static project for deployment
+# Compile next.js as a static project for deployment
 # With this command there is no need to build, it does it automatically.
 npm run export
 ```
@@ -137,7 +139,7 @@ This monorepo is composed of 3 packages:
 
 **next-app**
 
--   Main QuickTik NextJS app
+-   Main QuickTik Next.JS app
 -   Package that imports all the other packages listed below.
 
 **material-ui-components**
@@ -164,10 +166,10 @@ To run a specific storybook, navegate to the package and run the command above.
 
 <br />
 
-### 4. Deployment: NextJS static app (Optional)
+### 4. Deployment: Next.JS static app (Optional)
 
 ```bash
-# Compile nextjs as a static project for production.
+# Compile next.js as a static project for production.
 # With this command there is no need to build, it does it automatically.
 
 yarn export
