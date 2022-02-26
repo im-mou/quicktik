@@ -1,6 +1,6 @@
 {
   "name": "mantine-ui-components",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.3-alpha.0",
   "description": "React components made with Mantine ui",
   "author": "im-mou",
   "license": "MIT",
@@ -61,5 +61,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "gitHead": "c367717293a4c83890df5dea55aec02ac13a48fe"
 }
