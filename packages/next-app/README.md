@@ -5,8 +5,11 @@
 <p align="center">
   QuickTik - A simple time bounded to-do task scheduler.
 </p>
+  
 <br />
 <br />
+
+![example workflow](https://github.com/im-mou/quicktik/actions/workflows/ci.yml/badge.svg)
 
 QuickTik is a web app that allows you to create tasks with a timer attached to them. It allows you to play, pause, edit or mark the tasks as completed. Currently all data will be saved locally in your device using LocalStorage WebApi so be careful when clearing browser data.
 
