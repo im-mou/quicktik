@@ -1,6 +1,6 @@
 {
-  "name": "material-ui-components",
-  "version": "1.0.3-alpha.0",
+  "name": "@im-mou/material-ui-components",
+  "version": "1.0.4-alpha.0",
   "description": "React components made with Material-UI",
   "author": "im-mou",
   "license": "MIT",
@@ -66,5 +66,5 @@
   "files": [
     "dist"
   ],
-  "gitHead": "c367717293a4c83890df5dea55aec02ac13a48fe"
+  "gitHead": "cf2db3ad6939a776053e88803d6c8d3474764009"
 }
