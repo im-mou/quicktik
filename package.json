@@ -11,9 +11,9 @@
     ],
     "scripts": {
         "bootstrap": "lerna bootstrap --hoist",
-        "export:next-app": "lerna run --scope next-app --stream export",
-        "package:next-app": "lerna run --scope next-app --stream start",
-        "dev": "lerna run --scope next-app --stream dev",
+        "export:next-app": "lerna run --scope @im-mou/next-app --stream export",
+        "package:next-app": "lerna run --scope @im-mou/next-app --stream start",
+        "dev": "lerna run --scope @im-mou/next-app --stream dev",
         "start": "run-p --print-label package:*",
         "build": "lerna run --parallel build",
         "export": "yarn build && yarn export:next-app",
