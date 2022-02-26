@@ -1,6 +1,6 @@
 {
     "name": "@im-mou/next-app",
-    "version": "1.0.4-alpha.0",
+    "version": "1.0.6-alpha.0",
     "description": "Quicktik NextJS app",
     "author": "im-mou",
     "license": "MIT",
@@ -14,6 +14,8 @@
         "test": "jest"
     },
     "dependencies": {
+        "@im-mou/mantine-ui-components": "^1.0.6-alpha.0",
+        "@im-mou/material-ui-components": "^1.0.6-alpha.0",
         "@mantine/core": "^3.6.9",
         "@mantine/dates": "^3.6.9",
         "@mantine/hooks": "^3.6.9",
@@ -22,8 +24,6 @@
         "@mantine/notifications": "^3.6.9",
         "@radix-ui/react-icons": "^1.0.3",
         "dayjs": "^1.10.7",
-        "@im-mou/mantine-ui-components": "^1.0.4-alpha.0",
-        "@im-mou/material-ui-components": "^1.0.4-alpha.0",
         "mobx": "^6.4.1",
         "mobx-react": "^7.3.0",
         "next": "12.1.0",
@@ -52,5 +52,5 @@
         "ts-node": "^10.5.0",
         "typescript": "4.5.5"
     },
-    "gitHead": "cf2db3ad6939a776053e88803d6c8d3474764009"
+    "gitHead": "949d3b377af5e41bc1de4572d7357b554b25966d"
 }

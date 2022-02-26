@@ -1,6 +1,6 @@
 {
   "name": "@im-mou/mantine-ui-components",
-  "version": "1.0.4-alpha.0",
+  "version": "1.0.6-alpha.0",
   "description": "React components made with Mantine ui",
   "author": "im-mou",
   "license": "MIT",
@@ -14,14 +14,16 @@
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
-    "prepare": "run-s build",
-    "test": "run-s test:unit test:lint test:build",
-    "test:build": "run-s build",
+    "prepare": "yarn build",
+    "test": "yarn test:unit test:lint test:build",
+    "test:build": "yarn build",
     "test:lint": "eslint .",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "predeploy": "cd example && yarn install && yarn run build",
-    "deploy": "gh-pages -d example/build"
+    "deploy": "gh-pages -d example/build",
+    "storybook": "start-storybook -p 6016",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@mantine/core": "^3.6.9",
@@ -31,6 +33,14 @@
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-interactions": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/node-logger": "^6.4.19",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.19",
+    "@storybook/testing-library": "^0.0.9",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -54,7 +64,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
     "microbundle-crl": "^0.13.10",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.5.1",
     "react-scripts": "^3.4.1",
     "typescript": "4.5.5"
@@ -62,5 +71,17 @@
   "files": [
     "dist"
   ],
-  "gitHead": "cf2db3ad6939a776053e88803d6c8d3474764009"
+  "gitHead": "949d3b377af5e41bc1de4572d7357b554b25966d",
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
+  }
 }

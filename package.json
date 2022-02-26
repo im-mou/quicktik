@@ -19,7 +19,8 @@
         "export": "yarn build && yarn export:next-app",
         "test": "lerna run test",
         "prepare": "husky install",
-        "lint": "lerna run lint"
+        "lint": "lerna run lint",
+        "storybook": "lerna run storybook --parallel"
     },
     "devDependencies": {
         "enforce-branch-name": "^1.0.1",

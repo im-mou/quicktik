@@ -1,32 +1,41 @@
-<p align="center" style="margin:48px 0">
-  <img height="40" src="./assets/images/quicktik-logo.png">
-</p>
-<br />
 <p align="center">
-  QuickTik - A simple time bounded to-do task scheduler.
+   <br/>
+   <br/>
+   <a href="quicktik.mohsinriaz.es" target="_blank"><img src="./.github/images/quicktik-icon.png" /></a>
+   <br/>
+   <br/>
+
+   <h3 align="center">QuickTik</h3>
+   <p align="center">
+   A simple time bounded to-do task scheduler.
+   </p>
+   <br/>
+   <p align="center" style="align: center;">
+      <a href="#">
+        <img alt="npm" src="https://github.com/im-mou/quicktik/actions/workflows/ci.yml/badge.svg" />
+      </a>
+      <a href="https://opensource.org/licenses/MIT">
+        <img alt="open-source" src="https://badges.frapsoft.com/os/v1/open-source.svg?v=103" />
+      </a>
+      <a href="https://opensource.org/licenses/MIT">
+        <img alt="mit-Licence" src="https://badges.frapsoft.com/os/mit/mit.png?v=103" />
+      </a>
+   </p>
 </p>
 
+<br/>
+<hr />
+
+## Overview
+
+QuickTik is a web app that allows you to create tasks with a timer attached to them and orginize them in diference boards. It allows you to play, pause, edit or mark the tasks as completed. Currently all data will be saved locally in your device using IndexedDB so be careful when clearing browser data.
+
 <br />
-<br />
-
-![example workflow](https://github.com/im-mou/quicktik/actions/workflows/ci.yml/badge.svg)
-
-QuickTik is a web app that allows you to create tasks with a timer attached to them. It allows you to play, pause, edit or mark the tasks as completed. Currently all data will be saved locally in your device using LocalStorage WebApi so be careful when clearing browser data.
-
 <br />
 
 <p align="center">
-  <img width="100%" src="./assets/images/design_layout.png">
-  Design Layout
-</p>
-
-<br />
-<br />
-
-<br />
-
-<p align="center">
-  <img width="100%" src="./assets/images/tech_used.png">
+  <img width="80%" src="./.github/images/tech_used.png">
+  <br />
   Tech Stack
 </p>
 
@@ -35,9 +44,9 @@ QuickTik is a web app that allows you to create tasks with a timer attached to t
 
 ## Motivation
 
-This project is just a learning exercise to improve my design and development skills using react, next.js and more libraries that I don't get a chance to use at work.
+This project is just a learning exercise to improve my design and development skills using react, next.js, lerna, yarn workspaces and other tech and libraries that I don't get a chance to use at work.
 
-This project is a kind of an over-engineered to-do list.
+> Note: This project is a kind of an over-engineered to-do list don't take it too seriously.
 
 <br />
 <br />
@@ -52,30 +61,51 @@ This project is a kind of an over-engineered to-do list.
 -   Other platforms integration (Google, Trello, etc...)
 
 <br />
-<br />
+<hr />
 
-## Running in local envoirnment
+## Getting Started
 
-### Setup and running the project using YARN (workspaces)
+### 1. Clone the repository and install dependencies
 
 ```bash
-# install all deps using
+git clone https://github.com/im-mou/quicktik.git
+cd quicktik
 yarn install
+# or
+npm install
+```
 
-# run next js dev server
+<br />
+
+### 2. Running in local envoirnment
+
+**Setup and running the project using YARN w/ workspaces**
+
+Run nextjs dev server:
+
+```bash
+# run nextjs dev server
 yarn dev
+```
 
-# Production:
+Run nextjs production server:
+
+```bash
+# run next js production server
 yarn build
 yarn start
+```
 
-# Optional:
-# Compile nextjs as a static project for production.
+Compile nextjs as a static project for deployment:
+
+```bash
 # With this command there is no need to build, it does it automatically.
 yarn export
 ```
 
-### Setup and running the project using NPM (lerna)
+<br />
+
+**Setup and running the project using NPM w/ lerna**
 
 ```bash
 # install all deps
@@ -84,14 +114,79 @@ npm run bootstrap
 # run next js dev server
 npm run dev
 
-# Production:
+# or:
+
+# Production server:
 npm run build
 npm run start
 
-# Optional:
-# Compile nextjs as a static project for production.
+# or:
+
+# Compile nextjs as a static project for deployment
 # With this command there is no need to build, it does it automatically.
 npm run export
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+<br />
+
+### 3. Run storybooks for local development (Optional)
+
+This monorepo is composed of 3 packages:
+
+**next-app**
+
+-   Main QuickTik NextJS app
+-   Package that imports all the other packages listed below.
+
+**material-ui-components**
+
+-   Package containing react components made w/ Material-UI
+-   Contains [Storybook](https://storybook.js.org/) that run on [http://localhost:6006](https://storybook.js.org/)
+
+**mantine-ui-components**
+
+-   Package containing react components made w/ Mantine
+-   Contains [Storybook](https://storybook.js.org/) that run on [http://localhost:6016](https://storybook.js.org/)
+
+<br />
+
+To run all storybooks at once, run the following command:
+
+```bash
+yarn storybook
+# or
+npm run storybook
+```
+
+To run a specific storybook, navegate to the package and run the command above.
+
+<br />
+
+### 4. Deployment: NextJS static app (Optional)
+
+```bash
+# Compile nextjs as a static project for production.
+# With this command there is no need to build, it does it automatically.
+
+yarn export
+# or
+npm run export
+```
+
+<br />
+<br />
+
+## Wana contribute?
+
+Go ahead, let's help each other out and improve over skills and become better programmers or whatever.
+
+Have fun!
+
+<br />
+<br />
+
+## License
+
+MIT
