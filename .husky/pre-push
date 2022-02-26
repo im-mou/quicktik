@@ -4,4 +4,4 @@
 
 . "$(dirname "$0")/_/husky.sh"
 
-yarn enforce-branch-name "(hotfix|bugfix|feature)/.+" --ignore "(master|production)"
+yarn enforce-branch-name "(hotfix|bugfix|feature)/.+" --ignore "(main|production)"
