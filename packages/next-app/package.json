@@ -1,0 +1,33 @@
+{
+    "name": "next-app",
+    "version": "1.0.0",
+    "license": "MIT",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "export": "next export -o _static; mv _static ../../",
+        "test": "jest"
+    },
+    "dependencies": {
+        "next": "12.1.0",
+        "next-transpile-modules": "^3.3.0",
+        "@mantine/next": "^3.6.9",
+        "@mantine/core": "^3.6.9",
+        "@mantine/dates": "^3.6.9",
+        "@mantine/hooks": "^3.6.9",
+        "@mantine/modals": "^3.6.9",
+        "@mantine/notifications": "^3.6.9",
+        "@radix-ui/react-icons": "^1.0.3",
+        "react-query": "^3.34.16"
+    },
+    "devDependencies": {
+        "@types/next": "^9.0.0",
+        "@types/pouchdb": "^6.4.0",
+        "@types/pouchdb-upsert": "^2.2.6",
+        "eslint-config-next": "12.1.0",
+        "git-revision-webpack-plugin": "^5.0.0",
+        "pouchdb-adapter-memory": "^7.2.2"
+    }
+}
