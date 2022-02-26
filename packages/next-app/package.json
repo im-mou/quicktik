@@ -1,6 +1,6 @@
 {
     "name": "next-app",
-    "version": "0.0.1-alpha.0",
+    "version": "1.0.0-alpha.0",
     "description": "Quicktik NextJS app",
     "author": "im-mou",
     "license": "MIT",
@@ -23,8 +23,8 @@
         "@mantine/notifications": "^3.6.9",
         "@radix-ui/react-icons": "^1.0.3",
         "dayjs": "^1.10.7",
-        "mantine-ui-components": "^0.0.1-alpha.0",
-        "material-ui-components": "^0.0.1-alpha.0",
+        "mantine-ui-components": "^1.0.0-alpha.0",
+        "material-ui-components": "^1.0.0-alpha.0",
         "mobx": "^6.4.1",
         "mobx-react": "^7.3.0",
         "next": "12.1.0",
