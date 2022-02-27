@@ -1,4 +1,4 @@
-import { IAppConfig, IGroup, IUserConfig, TPouchError } from '../types';
+import { IAppConfig, IGroup, IUserConfig } from '../types';
 import BaseService from './base.service';
 
 class SettingsService extends BaseService {

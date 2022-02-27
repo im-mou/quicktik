@@ -1,4 +1,4 @@
-import TestDatabase from '../initilizeTestDatabase';
+import TestDatabase from '../../database/testDatabase';
 import { settingsService } from '../../services/settings.service';
 import { IGroup } from '../../types';
 import { helpers } from '../../utils/helpers';

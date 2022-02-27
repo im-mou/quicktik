@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "baseUrl": "./",
+        "target": "es2020",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "skipLibCheck": true,
@@ -8,14 +9,17 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "esModuleInterop": true,
-        "module": "esnext",
+        "module": "es2020",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
         "incremental": true,
         "strictNullChecks": false,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@im-mou/next-app": ["packages/next-app"]
+        }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]

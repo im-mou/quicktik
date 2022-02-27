@@ -30,7 +30,7 @@
 
 QuickTik is a web app that allows you to create tasks with a timer attached to them and organize them in different boards. It allows you to play, pause, edit or mark the tasks as completed.
 
->**IMPORTANT** – Currently all your data will be store locally in your device using IndexedDB so be careful when clearing browser data.
+> **IMPORTANT** – Currently all your data will be store locally in your device using IndexedDB so be careful when clearing browser data.
 
 <br />
 <br />
@@ -90,19 +90,12 @@ Run next.js dev server:
 yarn dev
 ```
 
-Run next.js production server:
+Or run next.js production server:
 
 ```bash
 # run next.js production server
 yarn build
 yarn start
-```
-
-Compile next.js as a static project for deployment:
-
-```bash
-# With this command there is no need to build, it does it automatically.
-yarn export
 ```
 
 <br />
@@ -121,12 +114,6 @@ npm run dev
 # Production server:
 npm run build
 npm run start
-
-# or:
-
-# Compile next.js as a static project for deployment
-# With this command there is no need to build, it does it automatically.
-npm run export
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -139,7 +126,7 @@ This monorepo is composed of 3 packages:
 
 **next-app**
 
--   Main QuickTik Next.JS app
+-   Main next.js app
 -   Package that imports all the other packages listed below.
 
 **material-ui-components**
@@ -166,7 +153,7 @@ To run a specific storybook, navegate to the package and run the command above.
 
 <br />
 
-### 4. Deployment: Next.JS static app (Optional)
+### 4. Deployment: next.js static app (Optional)
 
 ```bash
 # Compile next.js as a static project for production.
@@ -182,11 +169,10 @@ npm run export
 
 ## Wana contribute?
 
-Go ahead, let's help each other out and improve over skills and become better programmers or whatever.
+Go ahead, let's help each other out and improve over skills and become better programmers or.. whatever.
 
 Have fun!
 
-<br />
 <br />
 
 ## License

@@ -1,20 +1,18 @@
-import type { Config } from '@jest/types';
-
-// Sync object
-const config: Config.InitialOptions = {
+module.exports = {
     silent: true,
     roots: ['.'],
     transform: {
         '.+\\.tsx?$': 'ts-jest'
     },
-    testRegex: '/__tests__/.*\\.spec\\.tsx?$',
+    testRegex: './__tests__/.*\\.spec\\.ts?$',
     setupFilesAfterEnv: ['./__tests__/setup.js'],
     maxWorkers: 1,
+    preset: 'ts-jest',
+    testEnvironment: 'node',
     globals: {
         'ts-jest': {
-            isolatedModules: true
+            tsconfig: 'tsconfig.json'
         }
-    }
+    },
+    rootDir: '.'
 };
-
-export default config;
