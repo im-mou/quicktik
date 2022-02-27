@@ -12,7 +12,7 @@ import {
     Tooltip
 } from '@mantine/core';
 import { PersonIcon, DashboardIcon, RocketIcon } from '@radix-ui/react-icons';
-import { GROUP_COLORS_LIST } from '../../utils/constants';
+import { GROUP_COLORS_LIST } from '../../config/constants';
 import { useForm } from '@mantine/hooks';
 import BoxCenteredContent from '../BoxCenteredContent';
 

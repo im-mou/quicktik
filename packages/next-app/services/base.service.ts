@@ -1,12 +1,13 @@
-import Database from 'database';
+import Database from '../database';
+import PouchDBObject from 'database/pouchdbObject';
 import { TPouchError } from '../types';
 
 // base service
 export default class BaseService {
-    public db: Database;
+    public db: PouchDBObject;
 
     constructor() {
-        this.db = new Database().init();
+        this.db = Database.getInstance();
     }
 
     parseError(error: TPouchError | any) {

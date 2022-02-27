@@ -1,11 +1,12 @@
-import TestDatabase from '../../database/testDatabase';
 import { settingsService } from '../settings.service';
 import { IGroup } from '../../types';
 import { helpers } from '../../utils/helpers';
 import { groupsService } from '../groups.service';
 
+import Database from '../../database';
+
 // in memory database instance
-const database = new TestDatabase();
+const database = Database.getInstance();
 
 // Create dummy data
 const randomHexColor = helpers.randomColor();
@@ -30,7 +31,7 @@ describe.skip('Tests while app is not initialized', () => {
     });
 
     afterAll(async () => {
-        await database.db.destroy();
+        await database.destroy();
     });
 
     test('should test that user-config initial values are created', () => {
@@ -69,7 +70,7 @@ describe.skip('Tests while app has been initialized', () => {
     });
 
     beforeEach(async () => {
-        await database.db.destroy();
+        await database.destroy();
     });
 
     test('should not initialize app data with out any parametes', () => {

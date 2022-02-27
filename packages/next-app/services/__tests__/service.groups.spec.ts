@@ -1,10 +1,10 @@
-import Database from 'database';
 import { IGroup } from '../../types';
 import { helpers } from '../../utils/helpers';
 import { groupsService } from '../groups.service';
+import Database from '../../database';
 
 // in memory database instance
-const database = new Database({}, '-test-db');
+const database = Database.getInstance();
 
 // Create dummy data
 const randomHexColor = helpers.randomColor();
@@ -18,7 +18,7 @@ const fakeBoards: IGroup[] = [...Array(10).keys()].map((item) => ({
 }));
 
 // console.error(fakeBoards);
-// console.error(PouchDB.defaults());
+console.error(database);
 
 // Tests
 describe('Tests Boards service', () => {
