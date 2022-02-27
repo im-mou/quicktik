@@ -1,3 +1,4 @@
+import PouchDB from 'pouchdb';
 import { IGroup, IAppConfig, IUserConfig } from '../types';
 
 // local interfaces
@@ -12,6 +13,7 @@ export default class Database {
     public tables: IDatabseInstance<unknown>[] = [];
 
     // props
+    private suffix: string;
     private dbConfig: PouchDB.Configuration.DatabaseConfiguration;
     public constants = {
         APP_CONFIG: 'app-config',
@@ -19,40 +21,51 @@ export default class Database {
     };
 
     // ctor
-    constructor(
-        PouchDBInstance: PouchDB.Static<{}>,
-        config?: PouchDB.Configuration.DatabaseConfiguration,
-        suffix?: string
-    ) {
-        // attach plugins
-        PouchDBInstance.plugin(require('pouchdb-upsert'));
-
+    constructor(config?: PouchDB.Configuration.DatabaseConfiguration, suffix?: string) {
         // databse settings
-        this.dbConfig = config || { adapter: 'indexeddb' /** IndexedDB */ };
+        this.dbConfig = config;
+        this.suffix = suffix;
 
+        // attach plugins
+        PouchDB.plugin(require('pouchdb-upsert'));
+
+        // attach adapter plugin
+        if (process.env.NODE_ENV === 'test') {
+            // in memory db
+            PouchDB.plugin(require('pouchdb-adapter-memory'));
+            this.dbConfig['adapter'] = 'memory';
+        } else {
+            // IndexedDB
+            PouchDB.plugin(require('pouchdb-adapter-indexeddb'));
+            this.dbConfig['adapter'] = 'indexeddb';
+        }
+    }
+
+    public init() {
         // create tables
-        this.groups = new PouchDBInstance<IGroup>(`groups-table${suffix || ''}`, this.dbConfig);
+        this.groups = new PouchDB<IGroup>(`groups-table${this.suffix || ''}`, this.dbConfig);
 
-        this.tasks = new PouchDBInstance<any>(`tasks-table${suffix || ''}`, this.dbConfig);
+        this.tasks = new PouchDB<any>(`tasks-table${this.suffix || ''}`, this.dbConfig);
 
-        this.config = new PouchDBInstance<IAppConfig | IUserConfig>(`app-config-table${suffix || ''}`, this.dbConfig);
+        this.config = new PouchDB<IAppConfig | IUserConfig>(`app-config-table${this.suffix || ''}`, this.dbConfig);
 
         // create an array with tables
         this.tables = [this.groups, this.tasks, this.config];
+
+        return this;
     }
 
     // Destroy all tebles from the database
     public async destroy() {
         const promises = this.tables.map((table) => {
-            return new Promise((resolve, reject) => {
-                table
-                    .destroy()
-                    .then(() => {
-                        resolve(true);
-                    })
-                    .catch((e) => {
-                        reject(e);
-                    });
+            return new Promise(async (resolve, reject) => {
+                try {
+                    await table.close();
+                    await table.destroy();
+                    resolve(true);
+                } catch (e) {
+                    reject(e);
+                }
             });
         });
 

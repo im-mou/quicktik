@@ -11,7 +11,7 @@
         "start": "next start",
         "lint": "next lint",
         "export": "npm run build && next export -o _static; mv _static ../../",
-        "test": "jest --config ./jest.config.js"
+        "test": "jest"
     },
     "dependencies": {
         "@im-mou/mantine-ui-components": "^1.0.6-alpha.0",

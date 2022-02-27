@@ -1,11 +1,11 @@
 module.exports = {
-    silent: true,
+    silent: false,
     roots: ['.'],
     transform: {
         '.+\\.tsx?$': 'ts-jest'
     },
-    testRegex: './__tests__/.*\\.spec\\.ts?$',
-    setupFilesAfterEnv: ['./__tests__/setup.js'],
+    testRegex: '.*\\.spec\\.ts?$',
+    setupFilesAfterEnv: ['./__mocks__/setup.js'],
     maxWorkers: 1,
     preset: 'ts-jest',
     testEnvironment: 'node',
@@ -14,5 +14,6 @@ module.exports = {
             tsconfig: 'tsconfig.json'
         }
     },
-    rootDir: '.'
+    rootDir: '.',
+    globalSetup: './__mocks__/setupEnv.ts'
 };

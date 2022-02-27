@@ -1,12 +1,12 @@
-import indexedDB from '../database/indexedDB';
+import Database from 'database';
 import { TPouchError } from '../types';
 
 // base service
 export default class BaseService {
-    public db: ReturnType<typeof indexedDB>;
+    public db: Database;
 
     constructor() {
-        this.db = indexedDB();
+        this.db = new Database().init();
     }
 
     parseError(error: TPouchError | any) {
