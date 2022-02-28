@@ -1,32 +1,21 @@
 import { settingsService } from '../settings.service';
-import { IGroup } from '../../types';
-import { helpers } from '../../utils/helpers';
 import { groupsService } from '../groups.service';
 
 import Database from '../../database';
+import UserSettingsFactory from '../../database/factory/userSettings';
+import GroupFactory from '../../database/factory/group';
+import { IGroup } from '../../types';
 
 // in memory database instance
 const database = Database.getInstance();
 
-// Create dummy data
-const randomHexColor = helpers.randomColor();
-
-// Group
-const newGroup: IGroup = {
-    _id: helpers.uuid(),
-    label: 'test-group-1',
-    color: randomHexColor,
-    order: 0
-};
-
-// User data
-const newUser = {
-    name: 'test-user-1'
-};
+// mock info
+let mockGroupObject: IGroup = new GroupFactory().object();
+const userName = 'test-user';
 
 // Tests
-describe.skip('Tests while app is not initialized', () => {
-    beforeAll(() => {
+describe('Tests while app is not initialized', () => {
+    beforeAll(async () => {
         database.init();
     });
 
@@ -34,42 +23,39 @@ describe.skip('Tests while app is not initialized', () => {
         await database.destroy();
     });
 
-    test('should test that user-config initial values are created', () => {
-        // Test user-config
-        settingsService.getUserSettings().then((user_config) => {
-            expect(user_config).not.toBeUndefined();
-            expect(user_config._id).not.toBeUndefined();
-            expect(typeof user_config._id).toBe('string');
-        });
+    test('should test that USER-SETTINGS initial values are created', async () => {
+        // seed user data in the database
+        const userSettings = await new UserSettingsFactory().create();
+
+        // Test user settings
+        const dbUserSettings = await settingsService.getUserSettings();
+
+        expect(dbUserSettings).not.toBeUndefined();
+        expect(dbUserSettings).toMatchObject(userSettings);
     });
 
-    test('should test that app-config initial values are created', () => {
-        // Test user-config
-        settingsService.getAppSettings().then((app_config) => {
-            expect(app_config).not.toBeUndefined();
-            expect(app_config._id).not.toBeUndefined();
-            expect(typeof app_config._id).toBe('string');
+    test('should test that APP-SETTINGS initial values are created', async () => {
+        // Test app settings
+        const appSettings = await settingsService.getAppSettings();
 
-            // App is not initializde yet
-            expect(app_config.app_is_initialized).not.toBe(1);
-            expect(app_config.app_version).not.toBeUndefined();
-            expect(typeof app_config.initialization_timestamp).toBe('number');
-        });
+        // By default, app is considered not initialized until the user creates a profile
+        expect(appSettings.app_is_initialized).not.toBe(1);
+        expect(appSettings.initialization_timestamp).not.toBeUndefined();
+        expect(appSettings.app_version).not.toBeUndefined();
     });
 
-    test('should test if app is initialized', () => {
-        settingsService.isAppInitialized().then((response) => {
-            expect(response).toBeFalsy();
-        });
+    test('should test if app is initialized', async () => {
+        const initialized = await settingsService.isAppInitialized();
+        expect(initialized).toBeFalsy();
     });
 });
 
-describe.skip('Tests while app has been initialized', () => {
-    beforeEach(() => {
+describe('Tests while app has been initialized', () => {
+    beforeAll(async () => {
         database.init();
     });
 
-    beforeEach(async () => {
+    afterAll(async () => {
         await database.destroy();
     });
 
@@ -82,37 +68,32 @@ describe.skip('Tests while app has been initialized', () => {
         ).rejects.toThrow();
     });
 
-    describe('Tests initialized app', () => {
-        test('should initialize app with complete initial data', () => {
-            // Initialize app
-            settingsService
-                .initializeAppData({
-                    group: newGroup,
-                    userData: newUser
-                })
-                .then(() => {
-                    // app is initialized
-                    expect(settingsService.isAppInitialized()).resolves.toBeTruthy();
-                });
+    test('should initialize app with complete initial data', async () => {
+        // Initialize app
+        await settingsService.initializeAppData({
+            group: mockGroupObject,
+            userData: {
+                name: userName
+            }
         });
 
-        test('should verify user data is correct', () => {
-            // Verify newly created group and user data
-            settingsService.getUserSettings().then((userSettings) => {
-                expect(userSettings.selected_group_id).toBe(newGroup._id);
-                expect(userSettings.name).toBe(newUser.name);
-            });
+        expect(settingsService.isAppInitialized()).resolves.toBeTruthy();
+    });
+
+    test('should verify user data is correct', async () => {
+        // Verify newly created group and user data
+        const userSettings = await settingsService.getUserSettings();
+
+        expect(userSettings.selected_group_id).toBe(mockGroupObject._id);
+        expect(userSettings.name).toBe(userName);
+    });
+
+    test('should verify group data is correct', async () => {
+        // Check if group was correctly added
+        const dbGroup = await groupsService.getGroupById({
+            id: mockGroupObject._id
         });
 
-        test('should verify group data is correct', () => {
-            // Check if group was correctly added
-            groupsService
-                .getGroupById({
-                    id: newGroup._id
-                })
-                .then((group) => {
-                    expect(group).toMatchObject(newGroup);
-                });
-        });
+        expect(dbGroup).toMatchObject(mockGroupObject);
     });
 });

@@ -24,8 +24,23 @@ const imageLoader = ({ src }: { src: string }) => {
     return src;
 };
 
+/**
+ * Gets the value of an environment variable.
+ * @param envKey env variable key
+ * @param fallback fallback value if key doesn't exist in .env
+ * @returns Environment variable value.
+ */
+const env = (envKey: string, fallback: any) => {
+    if (!process.env?.[envKey]) {
+        return fallback;
+    } else {
+        return process.env[envKey];
+    }
+};
+
 export const helpers = {
     randomColor,
     uuid,
-    imageLoader
+    imageLoader,
+    env
 };

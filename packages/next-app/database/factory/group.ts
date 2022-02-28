@@ -1,4 +1,3 @@
-import { group } from 'console';
 import Database from '..';
 import { IGroup } from '../../types';
 import { helpers } from '../../utils/helpers';
@@ -10,7 +9,7 @@ export default class GroupFactory {
     }
 
     // generate board blueprint with random data
-    private generate = (data?: Partial<IGroup>): IGroup => {
+    public object = (data?: Partial<IGroup>): IGroup => {
         return {
             _id: helpers.uuid(),
             label: 'board-' + helpers.uuid().slice(0, 5),
@@ -19,14 +18,14 @@ export default class GroupFactory {
         } as IGroup;
     };
 
-    public create = async (data?: Partial<IGroup>) => {
+    public create = async (commonData?: Partial<IGroup>) => {
         const instance = Database.getInstance();
         try {
             // get docs count for the order counter
             const count = await instance.settings.info();
 
             // create instance
-            const groupsToAdd: IGroup = this.generate({ order: count.doc_count + 1, ...data });
+            const groupsToAdd: IGroup = this.object({ order: count.doc_count + 1, ...commonData });
 
             // add to db
             const newylyCreatedGroupResponse = await instance.groups.put<IGroup>(groupsToAdd);
@@ -38,7 +37,7 @@ export default class GroupFactory {
         }
     };
 
-    public bulk = async (data?: Partial<IGroup>) => {
+    public bulk = async (commonData?: Partial<IGroup>) => {
         const instance = Database.getInstance();
         try {
             if (this.count <= 1) {
@@ -52,7 +51,7 @@ export default class GroupFactory {
 
             // create boards instances
             [...Array(this.count).keys()].forEach((_, index) => {
-                groupsToAdd.push(this.generate({ order: count.doc_count + index + 1, ...data }));
+                groupsToAdd.push(this.object({ order: count.doc_count + index + 1, ...commonData }));
             });
 
             // buck add to db

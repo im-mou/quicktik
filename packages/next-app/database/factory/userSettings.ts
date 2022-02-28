@@ -3,7 +3,7 @@ import { IUserSettings } from '../../types';
 import { helpers } from '../../utils/helpers';
 import GroupFactory from './group';
 
-export default class UserFactory {
+export default class UserSettingsFactory {
     public create = async (data?: Partial<IUserSettings>) => {
         const instance = Database.getInstance();
 
