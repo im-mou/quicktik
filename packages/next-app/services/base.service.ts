@@ -7,7 +7,7 @@ export default class BaseService {
     public db: PouchDBObject;
 
     constructor() {
-        this.db = Database.getInstance().init();
+        this.db = Database.getInstance();
     }
 
     parseError(error: TPouchError | any) {

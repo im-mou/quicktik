@@ -14,7 +14,7 @@ const Home: NextPage = observer(() => {
     // Hooks
     const router = useRouter();
 
-    // Initialize RootStore
+    // Initialize Home page
     useEffect(() => {
         async function init() {
             // Check if it's the first time that a user is using the app

@@ -1,6 +1,9 @@
 import PouchDB from 'pouchdb';
 import PouchDBObject from './pouchdbObject';
 
+// attach plugins
+const MyPouchDB = PouchDB.plugin(require('pouchdb-upsert')).plugin(require('pouchdb-find'));
+
 class DatabaseInstanciator {
     instance: PouchDBObject = null;
     adapter: { createInstance: () => PouchDBObject } = null;
@@ -17,15 +20,23 @@ class DatabaseInstanciator {
 
 class IndexedBDAdapter {
     createInstance = () => {
-        PouchDB.plugin(require('pouchdb-adapter-indexeddb'));
-        return new PouchDBObject({ adapter: 'indexeddb' }, '');
+        return new PouchDBObject(
+            MyPouchDB.defaults({
+                adapter: 'idb'
+            })
+        );
     };
 }
 
 class MemoryDBAdapter {
     createInstance = () => {
-        PouchDB.plugin(require('pouchdb-adapter-memory'));
-        return new PouchDBObject({ adapter: 'memory' }, '-test-db');
+        return new PouchDBObject(
+            MyPouchDB.plugin(require('pouchdb-adapter-memory')).defaults({
+                adapter: 'memory'
+            }),
+            null,
+            '-test-db'
+        );
     };
 }
 

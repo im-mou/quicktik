@@ -34,48 +34,33 @@ class SettingsService extends BaseService {
                 /**
                  * Save user data and create new group
                  */
-                await new Promise((resolve, reject) => {
-                    this.getUserSettings()
-                        .then((doc) => {
-                            // Update and save keys
-                            doc.name = userData.name;
-                            doc.selected_group_id = newGroup.id;
+                const userSettings = await this.getUserSettings();
 
-                            // save user profile image
-                            if (userData.profile_image) {
-                                doc._attachments = {
-                                    profile_image: {
-                                        content_type: userData.profile_image.type,
-                                        data: userData.profile_image
-                                    }
-                                };
-                            }
+                // Update and save keys
+                userSettings.name = userData.name;
+                userSettings.selected_group_id = newGroup.id;
 
-                            this.db.settings.put(doc);
+                // save user profile image
+                if (userData.profile_image) {
+                    userSettings._attachments = {
+                        profile_image: {
+                            content_type: userData.profile_image.type,
+                            data: userData.profile_image
+                        }
+                    };
+                }
 
-                            resolve(doc);
-                        })
-                        .catch((err) => {
-                            reject(err);
-                        });
-                });
+                // Store user setting data into to db
+                await this.db.settings.put(userSettings);
 
                 /**
                  * Get APP CONFIG data to mark the app as initialized
                  */
-                await new Promise((resolve, reject) => {
-                    this.getAppSettings()
-                        .then((doc) => {
-                            // Update and save keys
-                            doc.app_is_initialized = 1;
-                            this.db.settings.put(doc);
+                const appSettings = await this.getAppSettings();
 
-                            resolve(doc);
-                        })
-                        .catch((err) => {
-                            reject(err);
-                        });
-                });
+                // Update and save keys
+                appSettings.app_is_initialized = 1;
+                await this.db.settings.put(appSettings);
             }
         } catch (e) {
             throw new Error('Something went wrong while initializing the app');
@@ -84,22 +69,11 @@ class SettingsService extends BaseService {
 
     // Get user settings data
     getUserSettings = async (): Promise<IUserSettings> => {
-        // Insert empty field if not present
-        await this.db.settings.putIfNotExists<IUserSettings>({
-            _id: this.db.constants.USER_SETTINGS
-        });
         return this.db.settings.get<IUserSettings>(this.db.constants.USER_SETTINGS);
     };
 
     // Get user settings data
     getAppSettings = async (): Promise<IAppSettings> => {
-        // Insert empty field if not present
-        await this.db.settings.putIfNotExists<IAppSettings>({
-            _id: this.db.constants.APP_SETTINGS,
-            initialization_timestamp: +new Date(),
-            app_version: 'alpha' // @Todo: use git version
-        });
-
         return this.db.settings.get<IAppSettings>(this.db.constants.APP_SETTINGS);
     };
 

@@ -1,11 +1,15 @@
 import PouchDB from 'pouchdb';
 import { IGroup, IAppSettings, IUserSettings } from '../types';
 
-// local interfaces
+// local interfaces and types
 interface IDatabseInstance<T> extends PouchDB.Database<T> {}
+type TMyPouchDB = ReturnType<typeof PouchDB.defaults>;
 
 // databse service
 export default class PouchDBObject {
+    private MyPouchDB: TMyPouchDB;
+    private initialized: boolean = false;
+
     // tables
     public groups: IDatabseInstance<IGroup>;
     public tasks: IDatabseInstance<unknown>;
@@ -21,29 +25,43 @@ export default class PouchDBObject {
     };
 
     // ctor
-    constructor(settings?: PouchDB.Configuration.DatabaseConfiguration, suffix?: string) {
+    constructor(MyPouchDB: TMyPouchDB, settings?: PouchDB.Configuration.DatabaseConfiguration, suffix?: string) {
         // databse settings
+        this.MyPouchDB = MyPouchDB;
         this.dbConfig = settings;
         this.suffix = suffix;
-
-        // attach plugins
-        PouchDB.plugin(require('pouchdb-upsert'));
-        PouchDB.plugin(require('pouchdb-find'));
     }
 
-    public init() {
+    public async init() {
+        // singleton behaviour
+        if (this.initialized) return Promise.resolve(true);
+
         // create tables
-        this.groups = new PouchDB<IGroup>(`groups-table${this.suffix || ''}`, this.dbConfig);
+        this.groups = new this.MyPouchDB<IGroup>(`groups-table${this.suffix || ''}`, this.dbConfig);
 
-        this.tasks = new PouchDB<any>(`tasks-table${this.suffix || ''}`, this.dbConfig);
+        this.tasks = new this.MyPouchDB<any>(`tasks-table${this.suffix || ''}`, this.dbConfig);
 
-        this.settings = new PouchDB<IAppSettings | IUserSettings>(
+        this.settings = new this.MyPouchDB<IAppSettings | IUserSettings>(
             `app-settings-table${this.suffix || ''}`,
             this.dbConfig
         );
 
         // create an array with tables
         this.tables = [this.groups, this.tasks, this.settings];
+
+        // Insert initial USER SETTING data
+        await this.settings.putIfNotExists<IUserSettings>({
+            _id: this.constants.USER_SETTINGS
+        });
+
+        // Insert initial APP SETTING data
+        await this.settings.putIfNotExists<IAppSettings>({
+            _id: this.constants.APP_SETTINGS,
+            initialization_timestamp: +new Date(),
+            app_version: 'alpha' // @Todo: use git version
+        });
+
+        this.initialized = true;
 
         return this;
     }
