@@ -1,5 +1,5 @@
 import { helpers } from '../utils/helpers';
-import { IGroup, IUserConfig } from '../types';
+import { IGroup, IUserSettings } from '../types';
 import BaseService from './base.service';
 
 class GroupsService extends BaseService {
@@ -17,7 +17,7 @@ class GroupsService extends BaseService {
     // get selected group
     getSelectedGroup = async () => {
         // get selected group id
-        const selected_group = await this.db.config.get<IUserConfig>(this.db.constants.USER_CONFIG);
+        const selected_group = await this.db.settings.get<IUserSettings>(this.db.constants.USER_SETTINGS);
 
         // Get group
         return this.getGroupById({ id: selected_group.selected_group_id });
@@ -26,13 +26,13 @@ class GroupsService extends BaseService {
     // change current selected group
     selectGroup = async ({ id }: { id: string }) => {
         // store new group value in setting table
-        const config = await this.db.config.get<IUserConfig>(this.db.constants.USER_CONFIG);
+        const settings = await this.db.settings.get<IUserSettings>(this.db.constants.USER_SETTINGS);
 
         // Update retrieved object
-        config.selected_group_id = id;
+        settings.selected_group_id = id;
 
         // save changes
-        const response = await this.db.config.put(config);
+        const response = await this.db.settings.put(settings);
 
         if (response.ok) {
             // get group

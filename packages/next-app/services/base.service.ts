@@ -1,5 +1,5 @@
 import Database from '../database';
-import PouchDBObject from 'database/pouchdbObject';
+import PouchDBObject from '../database/pouchdbObject';
 import { TPouchError } from '../types';
 
 // base service
@@ -7,7 +7,7 @@ export default class BaseService {
     public db: PouchDBObject;
 
     constructor() {
-        this.db = Database.getInstance();
+        this.db = Database.getInstance().init();
     }
 
     parseError(error: TPouchError | any) {

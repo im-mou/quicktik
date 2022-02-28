@@ -1,70 +1,57 @@
-import { IGroup } from '../../types';
-import { helpers } from '../../utils/helpers';
+import { IGroup, IUserSettings } from '../../types';
 import { groupsService } from '../groups.service';
 import Database from '../../database';
+import GroupFactory from '../../database/factory/group';
+import UserFactory from '../../database/factory/user';
 
 // in memory database instance
 const database = Database.getInstance();
 
-// Create dummy data
-const randomHexColor = helpers.randomColor();
+// Groups to create
+const GROUPS_COUNT = 10;
+const mockGroups: IGroup[] = [];
+let userSettings: IUserSettings = null; // this also creates a group
 
-// Groups
-const fakeBoards: IGroup[] = [...Array(10).keys()].map((item) => ({
-    _id: helpers.uuid(),
-    label: 'test-group-' + item,
-    color: randomHexColor,
-    order: item
-}));
+beforeAll(async () => {
+    database.init();
 
-// console.error(fakeBoards);
-console.error(database);
+    // seed groups and user data in the database
+    (await new GroupFactory(GROUPS_COUNT).bulk()).docs.forEach((group) => mockGroups.push(group));
+    userSettings = await new UserFactory().create();
+});
+
+afterAll(async () => {
+    await database.destroy();
+});
 
 // Tests
-describe('Tests Boards service', () => {
-    beforeAll(() => {
-        database.init();
-    });
-
-    afterAll(async () => {
-        await database.destroy();
-    });
-
+describe('Tests Boards service methods', () => {
     // Tests
-    test('should test that boards are created correctly', () => {
-        // Create boards
-        const promises = fakeBoards.map((group) => new Promise(() => groupsService.createGroup({ value: group })));
-
-        Promise.all(promises).then(() => {
-            groupsService.getAll().then((boards) => {
-                // check length
-                expect(boards.total_rows).toEqual(fakeBoards.length);
-            });
-        });
+    test('should test that boards are created correctly', async () => {
+        const boards = await groupsService.getAll();
+        // check length
+        expect(boards.total_rows).toEqual(GROUPS_COUNT + 1);
     });
 
-    test.only('should test a board search by group id', async () => {
-        const radomFakeBoard = fakeBoards[Math.floor(Math.random() * 10)];
+    test('should test a board search by group id', async () => {
+        const id = Math.floor(Math.random() * GROUPS_COUNT);
 
-        console.error(radomFakeBoard);
-
-        // expect(true).toBeFalsy();
         // Search group by id
-        const board = await groupsService.getGroupById({ id: radomFakeBoard._id });
+        const board = await groupsService.getGroupById({ id: mockGroups[id]._id });
 
-        console.error(board);
         // the found object matches the selected one
-        expect(true).toBeFalsy();
-        // expect(board).toMatchObject(radomFakeBoard);
+        expect(board).toMatchObject(mockGroups[id]);
+        expect(board).not.toMatchObject(mockGroups[(id + 1) % GROUPS_COUNT]);
     });
 
-    test('should select a board for the user to work with', () => {
-        const radomFakeBoard = fakeBoards[Math.floor(Math.random() * 10)];
+    test('should select a board for the user to work with', async () => {
+        const id = Math.floor(Math.random() * GROUPS_COUNT);
 
         // select board
-        groupsService.selectGroup({ id: radomFakeBoard._id }).then((board) => {
-            // the found object matches the selected one
-            expect(board).toMatchObject(radomFakeBoard);
-        });
+        const board = await groupsService.selectGroup({ id: mockGroups[id]._id });
+
+        // the found object matches the selected one
+        expect(board).toMatchObject(mockGroups[id]);
+        expect(board).not.toMatchObject(mockGroups[(id + 1) % GROUPS_COUNT]);
     });
 });

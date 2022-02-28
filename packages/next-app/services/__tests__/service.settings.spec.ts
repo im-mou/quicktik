@@ -82,7 +82,7 @@ describe.skip('Tests while app has been initialized', () => {
         ).rejects.toThrow();
     });
 
-    describe.skip('Tests initialized app', () => {
+    describe('Tests initialized app', () => {
         test('should initialize app with complete initial data', () => {
             // Initialize app
             settingsService

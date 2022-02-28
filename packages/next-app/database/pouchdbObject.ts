@@ -1,5 +1,5 @@
 import PouchDB from 'pouchdb';
-import { IGroup, IAppConfig, IUserConfig } from '../types';
+import { IGroup, IAppSettings, IUserSettings } from '../types';
 
 // local interfaces
 interface IDatabseInstance<T> extends PouchDB.Database<T> {}
@@ -9,25 +9,26 @@ export default class PouchDBObject {
     // tables
     public groups: IDatabseInstance<IGroup>;
     public tasks: IDatabseInstance<unknown>;
-    public config: IDatabseInstance<IAppConfig | IUserConfig>;
+    public settings: IDatabseInstance<IAppSettings | IUserSettings>;
     public tables: IDatabseInstance<unknown>[] = [];
 
     // props
     private suffix: string;
     private dbConfig: PouchDB.Configuration.DatabaseConfiguration;
     public constants = {
-        APP_CONFIG: 'app-config',
-        USER_CONFIG: 'user-config'
+        APP_SETTINGS: 'app-settings',
+        USER_SETTINGS: 'user-settings'
     };
 
     // ctor
-    constructor(config?: PouchDB.Configuration.DatabaseConfiguration, suffix?: string) {
+    constructor(settings?: PouchDB.Configuration.DatabaseConfiguration, suffix?: string) {
         // databse settings
-        this.dbConfig = config;
+        this.dbConfig = settings;
         this.suffix = suffix;
 
         // attach plugins
         PouchDB.plugin(require('pouchdb-upsert'));
+        PouchDB.plugin(require('pouchdb-find'));
     }
 
     public init() {
@@ -36,10 +37,13 @@ export default class PouchDBObject {
 
         this.tasks = new PouchDB<any>(`tasks-table${this.suffix || ''}`, this.dbConfig);
 
-        this.config = new PouchDB<IAppConfig | IUserConfig>(`app-config-table${this.suffix || ''}`, this.dbConfig);
+        this.settings = new PouchDB<IAppSettings | IUserSettings>(
+            `app-settings-table${this.suffix || ''}`,
+            this.dbConfig
+        );
 
         // create an array with tables
-        this.tables = [this.groups, this.tasks, this.config];
+        this.tables = [this.groups, this.tasks, this.settings];
 
         return this;
     }

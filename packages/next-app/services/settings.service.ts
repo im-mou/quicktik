@@ -1,14 +1,14 @@
-import { IAppConfig, IGroup, IUserConfig } from '../types';
+import { IAppSettings, IGroup, IUserSettings } from '../types';
 import BaseService from './base.service';
 
 class SettingsService extends BaseService {
     // check if app has been initialized
     isAppInitialized = async () => {
         try {
-            // get app config data from db
-            let appConfig = await this.db.config.get<IAppConfig>(this.db.constants.APP_CONFIG);
+            // get app settings data from db
+            let appSettings = await this.db.settings.get<IAppSettings>(this.db.constants.APP_SETTINGS);
 
-            return Boolean(appConfig.app_is_initialized);
+            return Boolean(appSettings.app_is_initialized);
         } catch (e: any) {}
     };
 
@@ -23,11 +23,11 @@ class SettingsService extends BaseService {
         if (!group || !userData) throw new Error('Some of the required data was not provided');
 
         try {
-            // get app config data from db
-            let appConfig = await this.getAppSettings();
+            // get app settings data from db
+            let appSettings = await this.getAppSettings();
 
             // if app is not initialized, we'll do it now
-            if (!appConfig.app_is_initialized) {
+            if (!appSettings.app_is_initialized) {
                 // We will create a new empty board
                 const newGroup = await this.db.groups.post<IGroup>(group);
 
@@ -51,7 +51,7 @@ class SettingsService extends BaseService {
                                 };
                             }
 
-                            this.db.config.put(doc);
+                            this.db.settings.put(doc);
 
                             resolve(doc);
                         })
@@ -68,7 +68,7 @@ class SettingsService extends BaseService {
                         .then((doc) => {
                             // Update and save keys
                             doc.app_is_initialized = 1;
-                            this.db.config.put(doc);
+                            this.db.settings.put(doc);
 
                             resolve(doc);
                         })
@@ -83,29 +83,29 @@ class SettingsService extends BaseService {
     };
 
     // Get user settings data
-    getUserSettings = async (): Promise<IUserConfig> => {
+    getUserSettings = async (): Promise<IUserSettings> => {
         // Insert empty field if not present
-        await this.db.config.putIfNotExists<IUserConfig>({
-            _id: this.db.constants.USER_CONFIG
+        await this.db.settings.putIfNotExists<IUserSettings>({
+            _id: this.db.constants.USER_SETTINGS
         });
-        return this.db.config.get<IUserConfig>(this.db.constants.USER_CONFIG);
+        return this.db.settings.get<IUserSettings>(this.db.constants.USER_SETTINGS);
     };
 
     // Get user settings data
-    getAppSettings = async (): Promise<IAppConfig> => {
+    getAppSettings = async (): Promise<IAppSettings> => {
         // Insert empty field if not present
-        await this.db.config.putIfNotExists<IAppConfig>({
-            _id: this.db.constants.APP_CONFIG,
+        await this.db.settings.putIfNotExists<IAppSettings>({
+            _id: this.db.constants.APP_SETTINGS,
             initialization_timestamp: +new Date(),
             app_version: 'alpha' // @Todo: use git version
         });
 
-        return this.db.config.get<IAppConfig>(this.db.constants.APP_CONFIG);
+        return this.db.settings.get<IAppSettings>(this.db.constants.APP_SETTINGS);
     };
 
     // Get user profile image
     getUserProfileImage = async () => {
-        return this.db.config.getAttachment(this.db.constants.USER_CONFIG, 'profile_image');
+        return this.db.settings.getAttachment(this.db.constants.USER_SETTINGS, 'profile_image');
     };
 }
 export const settingsService = new SettingsService();
