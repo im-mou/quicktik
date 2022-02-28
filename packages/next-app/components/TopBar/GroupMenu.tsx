@@ -1,10 +1,9 @@
 import { forwardRef, useCallback, useRef } from 'react';
 import { Menu, Divider, Text, Input } from '@mantine/core';
-import { Group, UnstyledButton, UnstyledButtonProps, DEFAULT_THEME } from '@mantine/core';
-import { ChevronDownIcon, GearIcon, ExternalLinkIcon } from '@radix-ui/react-icons';
+import { Group, UnstyledButton, UnstyledButtonProps, DEFAULT_THEME, ColorSwatch } from '@mantine/core';
+import { ChevronDownIcon, GearIcon, ExternalLinkIcon, CheckIcon } from '@radix-ui/react-icons';
 
 import { IGroup } from '../../types';
-import CircleCheckIcon from '../icons/CircleCheckIcon';
 import { observer } from 'mobx-react';
 import { useStore } from '../../store';
 import { groupsService } from '../../services/groups.service';
@@ -138,24 +137,38 @@ const GroupMenu: React.FC = observer(() => {
                 />
             </Menu.Label>
 
-            {GroupsStore.groups.length && <Divider />}
+            <Divider />
 
             {/**
              * Group List
              */}
-            {GroupsStore.groups.length && <Menu.Label>Select a group or create one</Menu.Label>}
+            <Menu.Label>Select a group or create one</Menu.Label>
 
             {GroupsStore.groups.map((item) => (
                 <Menu.Item
                     onClick={changeSelectedGroup(item)}
                     key={item.label}
-                    icon={<CircleCheckIcon color={item.color} selected={GroupsStore.selectedGroup?._id === item._id} />}
+                    icon={
+                        <ColorSwatch
+                            component="div"
+                            color={item.color}
+                            styles={{
+                                root: {
+                                    color: '#fff',
+                                    cursor: 'pointer'
+                                },
+                                children: { display: 'flex' }
+                            }}
+                        >
+                            {GroupsStore.selectedGroup?._id === item._id && <CheckIcon />}
+                        </ColorSwatch>
+                    }
                 >
                     {item.label}
                 </Menu.Item>
             ))}
 
-            {GroupsStore.groups.length && <Divider />}
+            <Divider />
 
             {GroupsStore.groups.length && (
                 <Menu.Item icon={<GearIcon />} rightSection={<ExternalLinkIcon color="gray" />}>

@@ -1,8 +1,8 @@
 import '../styles/globals.css';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useEffect } from 'react';
-import { MantineProvider } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { LoadingOverlay, MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { StoreProvider } from '../store';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -11,14 +11,17 @@ import Database from '../database';
 
 export default function App(props: AppProps) {
     const { Component, pageProps } = props;
-
     const queryClient = new QueryClient();
+
+    // localstate
+    const [appSetupinished, setAppSetupinished] = useState(false);
 
     // Initialize App
     useEffect(() => {
         async function init() {
             // Initialize pouchDB -> tables
             await Database.getInstance().init();
+            setAppSetupinished(true);
         }
 
         init();
@@ -44,7 +47,7 @@ export default function App(props: AppProps) {
                     >
                         <NotificationsProvider>
                             {/* <ModalsProviderWrapper> */}
-                            <Component {...pageProps} />
+                            {appSetupinished ? <Component {...pageProps} /> : <LoadingOverlay visible />}
                             {/* </ModalsProviderWrapper> */}
                         </NotificationsProvider>
                     </MantineProvider>

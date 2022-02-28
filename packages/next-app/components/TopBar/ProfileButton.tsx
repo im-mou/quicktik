@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { Group, Avatar, Text, UnstyledButton, UnstyledButtonProps, Loader } from '@mantine/core';
 import { settingsService } from '../../services/settings.service';
-import { IUserConfig } from '../../types';
+import { IUserSettings } from '../../types';
 
 // types and interaces
 interface ProfileButtonProps extends UnstyledButtonProps {
@@ -11,7 +11,7 @@ interface ProfileButtonProps extends UnstyledButtonProps {
 // Main component
 const ProfileButton = forwardRef<HTMLButtonElement, ProfileButtonProps>(
     ({ name, ...others }: ProfileButtonProps, ref) => {
-        const [userData, setUserData] = useState<IUserConfig>(null);
+        const [userData, setUserData] = useState<IUserSettings>(null);
         const [profileImage, setProfileImage] = useState<Blob>(null);
 
         useEffect(() => {

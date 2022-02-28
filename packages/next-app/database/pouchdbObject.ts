@@ -34,7 +34,7 @@ export default class PouchDBObject {
 
     public async init() {
         // singleton behaviour
-        if (this.initialized) return Promise.resolve(true);
+        if (this.initialized) return this;
 
         // create tables
         this.groups = new this.MyPouchDB<IGroup>(`groups-table${this.suffix || ''}`, this.dbConfig);

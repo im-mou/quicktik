@@ -8,7 +8,7 @@ class SettingsService extends BaseService {
             // get app settings data from db
             let appSettings = await this.db.settings.get<IAppSettings>(this.db.constants.APP_SETTINGS);
 
-            return Boolean(appSettings.app_is_initialized);
+            return Promise.resolve(Boolean(appSettings.app_is_initialized));
         } catch (e: any) {}
     };
 
