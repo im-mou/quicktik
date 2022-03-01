@@ -12,6 +12,9 @@ const GROUPS_COUNT = 10;
 const mockGroups: IGroup[] = [];
 
 beforeAll(async () => {
+    // in memory database instance
+    await database.init();
+
     // seed groups data in the database
     (await new GroupFactory(GROUPS_COUNT).bulk()).docs.forEach((group) => mockGroups.push(group));
 });

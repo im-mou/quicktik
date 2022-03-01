@@ -13,17 +13,17 @@ const database = Database.getInstance();
 let mockGroupObject: IGroup = new GroupFactory().object();
 const userName = 'test-user';
 
+beforeAll(async () => {
+    await database.init();
+});
+
+afterAll(async () => {
+    await database.destroy();
+});
+
 // Tests
 describe('Tests while app is not initialized', () => {
-    beforeAll(async () => {
-        database.init();
-    });
-
-    afterAll(async () => {
-        await database.destroy();
-    });
-
-    test('should test that USER-SETTINGS initial values are created', async () => {
+    test('should test that USER SETTINGS initial values are created', async () => {
         // seed user data in the database
         const userSettings = await new UserSettingsFactory().create();
 
@@ -34,7 +34,7 @@ describe('Tests while app is not initialized', () => {
         expect(dbUserSettings).toMatchObject(userSettings);
     });
 
-    test('should test that APP-SETTINGS initial values are created', async () => {
+    test('should test that APP SETTINGS initial values are created', async () => {
         // Test app settings
         const appSettings = await settingsService.getAppSettings();
 
@@ -51,14 +51,6 @@ describe('Tests while app is not initialized', () => {
 });
 
 describe('Tests while app has been initialized', () => {
-    beforeAll(async () => {
-        database.init();
-    });
-
-    afterAll(async () => {
-        await database.destroy();
-    });
-
     test('should not initialize app data with out any parametes', () => {
         expect(
             settingsService.initializeAppData({

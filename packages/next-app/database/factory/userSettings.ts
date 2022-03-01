@@ -12,7 +12,7 @@ export default class UserSettingsFactory {
             const group = await new GroupFactory().create();
 
             // creata  random user and apply seetings
-            await instance.settings.put<IUserSettings>({
+            await instance.settings.putIfNotExists<IUserSettings>({
                 _id: instance.constants.USER_SETTINGS,
                 name: 'user-name-' + helpers.uuid().slice(0, 5),
                 selected_group_id: group._id,
