@@ -5,6 +5,7 @@ import { APP_CONTAINER_WIDTH } from '../../config/constants';
 import { useStore } from '../../store';
 import TaskCreatorInput from './TaskCreatorInput';
 import TasksTabs from './TasksTabs';
+import { TimeSlider } from '@im-mou/material-ui-components';
 
 const TaskCreator = observer(() => {
     // global state
@@ -16,9 +17,6 @@ const TaskCreator = observer(() => {
         opacity: 0,
         color: GroupsStore.selectedGroup.color
     });
-
-    // vars
-    const bgColor = DEFAULT_THEME.colorScheme === 'light' ? '#fff' : DEFAULT_THEME.colors.gray[9];
 
     // Animate the bottom border
     useEffect(() => {
@@ -57,6 +55,7 @@ const TaskCreator = observer(() => {
             <Container size={APP_CONTAINER_WIDTH} padding={0}>
                 <Box sx={{ padding: '32px 0' }}>
                     <TaskCreatorInput />
+                    <TimeSlider />
                 </Box>
                 <TasksTabs />
             </Container>
