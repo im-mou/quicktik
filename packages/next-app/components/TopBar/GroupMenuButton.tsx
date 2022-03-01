@@ -23,13 +23,27 @@ const GroupButton = forwardRef<HTMLButtonElement, GroupButtonProps>(
             sx={(theme) => ({
                 display: 'block',
                 width: '100%',
+                height: '100%',
                 minWidth: 100,
                 padding: theme.spacing.md,
-                borderBottom: `4px solid ${color || DEFAULT_THEME.colors.gray[3]}`,
+                // borderBottom: `4px solid ${color || DEFAULT_THEME.colors.gray[3]}`,
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+                position: 'relative',
 
                 '&:hover': {
                     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
+                },
+
+                '&:after': {
+                    content: "''",
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    height: 4,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    width: '100%',
+                    background: color || DEFAULT_THEME.colors.gray[3]
                 }
             })}
             {...others}
@@ -43,7 +57,7 @@ const GroupButton = forwardRef<HTMLButtonElement, GroupButtonProps>(
 );
 
 // Main component
-const GroupMenu: React.FC = observer(() => {
+const GroupMenuButton: React.FC = observer(() => {
     // global state
     const { GroupsStore } = useStore();
 
@@ -105,6 +119,7 @@ const GroupMenu: React.FC = observer(() => {
             withArrow
             placement="center"
             closeOnItemClick={false}
+            shadow="lg"
             control={
                 <GroupButton color={getSelectedGroupColor()}>
                     {GroupsStore.selectedGroup ? (
@@ -179,4 +194,4 @@ const GroupMenu: React.FC = observer(() => {
     );
 });
 
-export default GroupMenu;
+export default GroupMenuButton;

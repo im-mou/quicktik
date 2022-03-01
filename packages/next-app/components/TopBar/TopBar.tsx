@@ -2,7 +2,7 @@ import { Box, Group } from '@mantine/core';
 import Logo from '../../assets/images/quicktik-logo.png';
 import Image from 'next/image';
 import ProfileButton from './ProfileButton';
-import GroupMenu from './GroupMenu';
+import GroupMenuButton from './GroupMenuButton';
 import TimeAndTasksStats from './TimeAndTasksStats';
 import SearchBar from './SearchBar';
 import { helpers } from '../../utils/helpers';
@@ -29,7 +29,7 @@ const TopBar: React.FC = () => {
             <Box>
                 <Group spacing={8}>
                     <SearchBar />
-                    <GroupMenu />
+                    <GroupMenuButton />
                     <ProfileButton name="Guest User" />
                 </Group>
             </Box>

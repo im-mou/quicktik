@@ -15,3 +15,5 @@ export const GROUP_COLORS_LIST = [
     '#fab005',
     '#fd7e14'
 ];
+
+export const APP_CONTAINER_WIDTH = 500;

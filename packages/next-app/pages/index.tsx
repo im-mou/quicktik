@@ -1,11 +1,13 @@
 import type { NextPage } from 'next';
-import { AppShell, Header, LoadingOverlay } from '@mantine/core';
+import { ActionIcon, AppShell, Header, LoadingOverlay, useMantineColorScheme } from '@mantine/core';
 import TopBar from '../components/TopBar';
 import { useStore } from '../store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import { settingsService } from '../services/settings.service';
+import TaskCreator from '../components/TaskCreator';
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 
 const Home: NextPage = observer(() => {
     // gloabl state
@@ -13,6 +15,9 @@ const Home: NextPage = observer(() => {
 
     // Hooks
     const router = useRouter();
+
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === 'dark';
 
     // Initialize Home page
     useEffect(() => {
@@ -40,7 +45,7 @@ const Home: NextPage = observer(() => {
 
     return (
         <AppShell
-            padding="md"
+            padding={0}
             header={
                 <Header height="auto" sx={{ padding: 0 }} fixed>
                     <TopBar />
@@ -52,7 +57,18 @@ const Home: NextPage = observer(() => {
                 }
             })}
         >
-            body
+            {/** App content */}
+            <TaskCreator />
+
+            {/** toggle dark mode */}
+            <ActionIcon
+                variant="outline"
+                color={dark ? 'yellow' : 'blue'}
+                onClick={() => toggleColorScheme()}
+                title="Toggle color scheme"
+            >
+                {dark ? <SunIcon style={{ width: 18, height: 18 }} /> : <MoonIcon style={{ width: 18, height: 18 }} />}
+            </ActionIcon>
         </AppShell>
     );
 });

@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { LoadingOverlay, MantineProvider } from '@mantine/core';
+import { ColorScheme, ColorSchemeProvider, LoadingOverlay, MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { StoreProvider } from '../store';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -16,6 +16,9 @@ export default function App(props: AppProps) {
     // localstate
     const [appSetupinished, setAppSetupinished] = useState(false);
 
+    // toggle theme
+    const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+
     // Initialize App
     useEffect(() => {
         async function init() {
@@ -26,6 +29,11 @@ export default function App(props: AppProps) {
 
         init();
     }, []);
+
+    // change theme event handler
+    const toggleColorScheme = (value?: ColorScheme) => {
+        setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+    };
 
     return (
         <>
@@ -38,19 +46,15 @@ export default function App(props: AppProps) {
 
             <QueryClientProvider client={queryClient}>
                 <StoreProvider>
-                    <MantineProvider
-                        withGlobalStyles
-                        withNormalizeCSS
-                        theme={{
-                            colorScheme: 'light'
-                        }}
-                    >
-                        <NotificationsProvider>
-                            {/* <ModalsProviderWrapper> */}
-                            {appSetupinished ? <Component {...pageProps} /> : <LoadingOverlay visible />}
-                            {/* </ModalsProviderWrapper> */}
-                        </NotificationsProvider>
-                    </MantineProvider>
+                    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+                        <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
+                            <NotificationsProvider>
+                                {/* <ModalsProviderWrapper> */}
+                                {appSetupinished ? <Component {...pageProps} /> : <LoadingOverlay visible />}
+                                {/* </ModalsProviderWrapper> */}
+                            </NotificationsProvider>
+                        </MantineProvider>
+                    </ColorSchemeProvider>
                 </StoreProvider>
             </QueryClientProvider>
         </>

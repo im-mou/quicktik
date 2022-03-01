@@ -38,7 +38,6 @@ const ProfileButton = forwardRef<HTMLButtonElement, ProfileButtonProps>(
                     display: 'block',
                     padding: theme.spacing.md,
                     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-
                     '&:hover': {
                         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
                     }
