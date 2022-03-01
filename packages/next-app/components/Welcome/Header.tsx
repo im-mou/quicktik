@@ -1,7 +1,7 @@
 import { Text } from '@mantine/core';
 import Image from 'next/image';
 import { helpers } from '../../utils/helpers';
-import BoxCenteredContent from '../BoxCenteredContent';
+import BoxCenteredContent from '../UI/BoxCenteredContent';
 import LogoIcon from '../../assets/images/quicktik-icon.png';
 
 // Main component

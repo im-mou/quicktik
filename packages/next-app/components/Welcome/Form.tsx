@@ -14,7 +14,7 @@ import {
 import { PersonIcon, DashboardIcon, RocketIcon } from '@radix-ui/react-icons';
 import { GROUP_COLORS_LIST } from '../../config/constants';
 import { useForm } from '@mantine/hooks';
-import BoxCenteredContent from '../BoxCenteredContent';
+import BoxCenteredContent from '../UI/BoxCenteredContent';
 
 // color selector menu
 const ColorSwatchMenu: React.FC = memo(() => {

@@ -2,7 +2,7 @@ import { Text, Button, Center, Avatar, UnstyledButton } from '@mantine/core';
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { helpers } from '../../utils/helpers';
-import BoxCenteredContent from '../BoxCenteredContent';
+import BoxCenteredContent from '../UI/BoxCenteredContent';
 
 const BUTTON_DIM = 100;
 
