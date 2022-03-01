@@ -1,6 +1,6 @@
 {
     "name": "@im-mou/next-app",
-    "version": "1.0.7-alpha.0",
+    "version": "1.0.8-alpha.0",
     "description": "Quicktik NextJS app",
     "author": "im-mou",
     "license": "MIT",
@@ -14,8 +14,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@im-mou/mantine-ui-components": "^1.0.7-alpha.0",
-        "@im-mou/material-ui-components": "^1.0.7-alpha.0",
+        "@im-mou/mantine-ui-components": "^1.0.8-alpha.0",
+        "@im-mou/material-ui-components": "^1.0.8-alpha.0",
         "@mantine/core": "^3.6.9",
         "@mantine/dates": "^3.6.9",
         "@mantine/hooks": "^3.6.9",
