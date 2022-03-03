@@ -4,6 +4,8 @@
 
 [![NPM](https://img.shields.io/npm/v/material-ui-components.svg)](https://www.npmjs.com/package/material-ui-components) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+> NOTE: This repo contains legacy code which is composed of react components developed using Material-ui v4.
+
 ## Install
 
 ```bash
@@ -13,16 +15,14 @@ npm install --save material-ui-components
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+import React from 'react';
 
-import MyComponent from 'material-ui-components'
-import 'material-ui-components/dist/index.css'
+import { MyComponent } from 'material-ui-components';
+import 'material-ui-components/dist/index.css';
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+const Example = () => {
+    return <MyComponent />;
+};
 ```
 
 ## License

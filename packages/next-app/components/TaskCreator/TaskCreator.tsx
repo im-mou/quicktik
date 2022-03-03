@@ -5,7 +5,8 @@ import { APP_CONTAINER_WIDTH } from '../../config/constants';
 import { useStore } from '../../store';
 import TaskCreatorInput from './TaskCreatorInput';
 import TasksTabs from './TasksTabs';
-import { TimeSlider } from '@im-mou/material-ui-components';
+import { TimeSlider, Button, TaskCreator as Tc } from '@im-mou/material-ui-components';
+import { HamburgerMenuIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 
 const TaskCreator = observer(() => {
     // global state
@@ -55,9 +56,8 @@ const TaskCreator = observer(() => {
             <Container size={APP_CONTAINER_WIDTH} padding={0}>
                 <Box sx={{ padding: '32px 0' }}>
                     <TaskCreatorInput />
-                    <TimeSlider />
+                    {/* <Tc /> */}
                 </Box>
-                <TasksTabs />
             </Container>
         </Box>
     );
